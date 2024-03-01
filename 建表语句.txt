@@ -1,0 +1,59 @@
+CREATE DATABASE  IF NOT EXISTS rehuixiangshudong ;
+USE rehuixiangshudong;
+-- 用户表
+DROP TABLE IF EXISTS `users`;
+create table users
+(
+    uid                 int UNSIGNED auto_increment comment '用户的uid',
+    username            varchar(20)       unique      not NULL comment '用户的用户名',
+    password            varchar(50)                   not NULL comment '用户的密码',
+    nickname            varchar(20)       unique      default NULL     comment '用户的昵称',
+    gender              int unsigned    default 0     not NULL comment '用户的性别 0未知 1男 2女',
+    birth_date          varchar(20)     default NULL              comment '用户的生日',
+    journal_count       int UNSIGNED default 0        not NULL comment '用户拥有的日记数量',
+    journal_group_count int UNSIGNED default 0        not NULL comment '用户拥有的日记串数量',
+    location            varchar(20)  default NULL     NULL comment '用户的地址',
+    background_image    varchar(255) default NULL     NULL comment '用户界面的背景图片URL',
+    search_history      TEXT         default NULL     NULL comment '用户搜索的历史记录备份',
+    last_login_time     DATETIME     default CURRENT_TIMESTAMP     not NULL comment '用户最后登录的时间',
+    user_profile_picture  varchar(255) default NULL                           comment '用户的头像URL',
+    constraint user_pk
+        primary key (uid)
+)
+    comment '用户表' auto_increment = 10000;
+
+-- 日记串表
+DROP TABLE IF EXISTS `journal_groups`;
+create table journal_groups
+(
+    journal_group_id   int unsigned auto_increment comment '日记串id',
+    journal_group_name varchar(20) default NULL                       comment '日记串名称',
+    created_at         DATETIME    default CURRENT_TIMESTAMP not NULL comment '日记串创建时间',
+    modified_at        DATETIME    default CURRENT_TIMESTAMP not NULL on update CURRENT_TIMESTAMP comment  '日记串修改时间',
+    is_deleted         int unsigned     default 0             not NULL comment '日记是否被删除 0未删除 1已删除',
+    user_id_at         int unsigned                          not NULL comment '日记串所属的用户',
+    journal_count      int unsigned     default 0            not NULL comment '日记串包含的日记数量',
+    constraint journal_groups_pk
+        primary key (journal_group_id)
+)
+    comment '日记串表' auto_increment = 10000;
+
+-- 日记表
+DROP TABLE IF EXISTS `journals`;
+create table journals
+(
+    journal_id          int UNSIGNED auto_increment comment '日记的id',
+    journal_title       varchar(20)  default NULL                       comment '日记的标题',
+    user_id_at          int UNSIGNED                           not NULL comment '日记所属的用户',
+    created_at          DATETIME     default CURRENT_TIMESTAMP not NULL comment '日记的创建时间',
+    modified_at         DATETIME     default CURRENT_TIMESTAMP not NULL on update CURRENT_TIMESTAMP comment '日记的修改时间',
+    location            varchar(20)  default NULL                       comment '日记的创建地点',
+    shared_count        int UNSIGNED default 0                 not NULL comment '日记被分享的次数',
+    is_deleted          int unsigned      default 0            not NULL comment '日记是否被删除 0未删除 1已删除',
+    journal_group_id_at int unsigned default 0                 not NULL comment '日记所属的日记串',
+    journal_text        text         default NULL                       comment '日记的内容',
+    top_journal          int unsigned default 0                 not NULL comment '是否为置顶日记 0否 1是',
+    constraint journals_pk
+        primary key (journal_id)
+)
+    comment '日记表' auto_increment = 10000;
