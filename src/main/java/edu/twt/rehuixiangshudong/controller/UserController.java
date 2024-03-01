@@ -100,6 +100,7 @@ public class UserController {
     @GetMapping("/userAgreement")
     public Result<Object> getUserAgreement(){
         //返回JSON格式的数据
+        log.info("用户协议被获取");
         return Result.success(MessageConstant.USER_AGREEMENT);
     }
 
@@ -111,7 +112,7 @@ public class UserController {
     @PutMapping("/changePassword")
     public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO){
         Integer uid = ThreadLocalUtil.getCurrentUid();
-        log.info("uid {} 修改密码",uid);
+        log.info("uid {} 修改密码 {}",uid,changePasswordDTO);
 
         userService.changePassWord(changePasswordDTO,uid);
 
