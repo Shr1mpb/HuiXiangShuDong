@@ -1,0 +1,33 @@
+server:
+  #服务器端口
+  port: 8080
+
+spring:
+  profiles:
+    #生效的配置文件
+    active: dev
+  main:
+    #开启循环依赖
+    allow-circular-references: true
+  datasource:
+    driver-class-name: ${huixiangshudong.datasource.driver-class-name}
+    url: jdbc:mysql://${huixiangshudong.datasource.host}:${huixiangshudong.datasource.port}/${huixiangshudong.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${huixiangshudong.datasource.username}
+    password: ${huixiangshudong.datasource.password}
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: edu.twt.zoo.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+session:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    secret-key: twtStudio
+    # 设置前端传递过来的令牌名称
+    token-name: token
+    # 设置jwt过期时间 此处设置了 30 天
+    ttl: 2592000000
