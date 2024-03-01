@@ -107,4 +107,15 @@ public class UserServiceImpl implements UserService {
         userMapper.updateLastLoginTimeByUid(uid,timestamp);
 
     }
+
+    /**
+     * 登出
+     * @param uid 用户uid
+     */
+    @Override
+    public void logout(Integer uid) {
+        //进行登出操作，即更新用户的最后登录时间即可
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        userMapper.updateLastLoginTimeByUid(uid, timestamp);
+    }
 }

@@ -11,9 +11,12 @@ import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.JwtUtil;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserRegisterAndLoginVO;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +110,7 @@ public class UserController {
     /**
      * 更改密码
      * @param changePasswordDTO 传输旧密码和新密码
-     * @return
+     * @return 返回JSON格式的数据
      */
     @PutMapping("/changePassword")
     public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO){
@@ -117,5 +120,19 @@ public class UserController {
         userService.changePassWord(changePasswordDTO,uid);
 
         return Result.success(MessageConstant.CHANGE_PASSWORD_SUCCESS);
+    }
+
+    /**
+     * 登出
+     * @return 返回成功信息 保存在data中
+     */
+    @GetMapping("/logout")
+    public Result logout() {
+        //获取token中的uid
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        log.info("uid为 {} 的用户登出...",uid);
+        userService.logout(uid);
+
+        return new Result(MessageConstant.LOGOUT_SUCCEED);
     }
 }

@@ -25,4 +25,10 @@ public interface UserService {
      * @param uid 传输uid
      */
     void changePassWord(ChangePasswordDTO changePasswordDTO, Integer uid);
+
+    /**
+     * 登出功能
+     * @param uid 用户uid
+     */
+    void logout(Integer uid);
 }
