@@ -41,7 +41,7 @@ public interface UserMapper {
      * @param username 用户名
      * @return User对象
      */
-    @Select("select uid,username,nickname,gender,birth_date,journal_count," +
+    @Select("select uid,username,password,nickname,gender,birth_date,journal_count," +
             "journal_group_count,location,background_image,search_history,user_profile_picture" +
             " from USERS where username = #{username}")
     User getByUsername(String username);

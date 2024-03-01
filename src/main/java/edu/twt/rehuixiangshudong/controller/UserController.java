@@ -61,4 +61,36 @@ public class UserController {
         return Result.success(userRegisterAndLoginVO);
 
     }
+    /**
+     * 用户登录
+     */
+    //TODO 注意移动传密码时直接md5加密
+    //注册时 先确保用户的最后登录时间字段被更新 再签发jwt令牌
+    @PostMapping("/login")
+    public Result<UserRegisterAndLoginVO> login(@RequestBody UserRegisterAndLoginDTO userRegisterAndLoginDTO) throws InterruptedException {
+        log.info("用户登录：{}",userRegisterAndLoginDTO);
+
+        User user = userService.login(userRegisterAndLoginDTO);
+
+        Thread.sleep(500);
+
+        Map<String, Object> claims = new HashMap<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        claims.put(JwtClaimsConstant.USER_ID, user.getUid());
+        claims.put(JwtClaimsConstant.USERNAME,user.getUsername());
+        claims.put(JwtClaimsConstant.CREATE_AT, timestamp);
+        String token = JwtUtil.createJWT(
+                jwtProperties.getSecretKey(),
+                jwtProperties.getTtl(),
+                claims
+        );
+        UserRegisterAndLoginVO userRegisterAndLoginVO = UserRegisterAndLoginVO.builder()
+                .uid(user.getUid())
+                .username(user.getUsername())
+                .token(token)
+                .nickname(user.getNickname())
+                .build();
+
+        return Result.success(userRegisterAndLoginVO);
+    }
 }
