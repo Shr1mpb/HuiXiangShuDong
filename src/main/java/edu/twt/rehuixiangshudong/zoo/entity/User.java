@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private int uid;//用户的uid
+    private Integer uid;//用户的uid
     private String username;//用户的用户名
     private String nickname;//用户昵称
     private String password;//用户的密码

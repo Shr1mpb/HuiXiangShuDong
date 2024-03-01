@@ -52,4 +52,23 @@ public interface UserMapper {
      */
     @Insert("insert into USERS (username,password) values (#{username},#{password})")
     void register(String username, String password);
+
+    /**
+     * 根据uid获取用户数据
+     * @param uid 用户uid
+     * @return User对象
+     */
+    @Select("select uid,username,password,nickname,gender,birth_date,journal_count," +
+            "journal_group_count,location,background_image,search_history,user_profile_picture" +
+            " from USERS where uid = #{uid}")
+    User getByUid(Integer uid);
+
+    /**
+     * 修改密码
+     * @param uid 用户uid
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     */
+    @Update("update USERS set password = #{newPassword} WHERE uid = #{uid} and password = #{oldPassword}")
+    void changePassword(Integer uid, String oldPassword, String newPassword);
 }

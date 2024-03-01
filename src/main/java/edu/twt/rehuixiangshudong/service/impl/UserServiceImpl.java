@@ -3,12 +3,10 @@ package edu.twt.rehuixiangshudong.service.impl;
 import edu.twt.rehuixiangshudong.mapper.UserMapper;
 import edu.twt.rehuixiangshudong.service.UserService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
+import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
-import edu.twt.rehuixiangshudong.zoo.exception.AccountAlreadyExistException;
-import edu.twt.rehuixiangshudong.zoo.exception.AccountNotFoundException;
-import edu.twt.rehuixiangshudong.zoo.exception.LoginFailedException;
-import edu.twt.rehuixiangshudong.zoo.exception.RegisterFailedException;
+import edu.twt.rehuixiangshudong.zoo.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,5 +82,29 @@ public class UserServiceImpl implements UserService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userMapper.updateLastLoginTimeByUsername(username,timestamp);
         return user;
+    }
+
+    /**
+     * 修改密码服务
+     * @param changePasswordDTO 传输旧密码和新密码
+     * @param uid 用户的uid(从ThreadLocal中获取token中的uid)
+     */
+    @Override
+    public void changePassWord(ChangePasswordDTO changePasswordDTO,Integer uid) {
+        String oldPassword = changePasswordDTO.getOldPassword();
+        String newPassword = changePasswordDTO.getNewPassword();
+        //先检查旧密码是否正确，如果不正确则返回错误结果
+        User user = userMapper.getByUid(uid);
+        //uid未查询到用户防止空指针异常
+        //旧密码不匹配 返回错误结果
+        if (user == null || !user.getPassword().equals(oldPassword)){
+            throw new ChangePasswordFailedException(MessageConstant.CHANGE_PASSWORD_FAILED);
+        }
+        //旧密码正确，密码进行修改
+        userMapper.changePassword(uid, oldPassword, newPassword);
+        //修改密码后 更新用户最后登录时间
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        userMapper.updateLastLoginTimeByUid(uid,timestamp);
+
     }
 }

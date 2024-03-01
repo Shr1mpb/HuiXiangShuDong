@@ -2,19 +2,18 @@ package edu.twt.rehuixiangshudong.controller;
 
 import edu.twt.rehuixiangshudong.service.UserService;
 import edu.twt.rehuixiangshudong.zoo.constant.JwtClaimsConstant;
+import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
+import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
 import edu.twt.rehuixiangshudong.zoo.properties.JwtProperties;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.JwtUtil;
+import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserRegisterAndLoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,5 +91,30 @@ public class UserController {
                 .build();
 
         return Result.success(userRegisterAndLoginVO);
+    }
+
+    /**
+     * 获取用户协议
+     * @return 返回JSON格式的数据 在Result的data中
+     */
+    @GetMapping("/userAgreement")
+    public Result<Object> getUserAgreement(){
+        //返回JSON格式的数据
+        return Result.success(MessageConstant.USER_AGREEMENT);
+    }
+
+    /**
+     * 更改密码
+     * @param changePasswordDTO 传输旧密码和新密码
+     * @return
+     */
+    @PutMapping("/changePassword")
+    public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO){
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        log.info("uid {} 修改密码",uid);
+
+        userService.changePassWord(changePasswordDTO,uid);
+
+        return Result.success(MessageConstant.CHANGE_PASSWORD_SUCCESS);
     }
 }
