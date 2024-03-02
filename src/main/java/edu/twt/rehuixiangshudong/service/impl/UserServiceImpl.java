@@ -8,6 +8,7 @@ import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
 import edu.twt.rehuixiangshudong.zoo.exception.*;
+import edu.twt.rehuixiangshudong.zoo.vo.UserInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -132,6 +133,31 @@ public class UserServiceImpl implements UserService {
             userMapper.changeUserInfo(changeUserInfoDTO, uid);
         } catch (Exception e) {
             throw new NicknameAlreadyExistException(MessageConstant.NICKNAME_EXIST);
+        }
+    }
+
+    /**
+     * 获取用户信息
+     * @param uid 从token中获取的uid
+     * @return
+     */
+    @Override
+    public UserInfoVO getUserInfo(Integer uid) {
+
+        try {
+            UserInfoVO userInfoVO = userMapper.getUserInfo(uid);
+            if (userInfoVO != null) {//非空判断 防止空指针异常
+                if (userInfoVO.getGender().equals("1")) {
+                    userInfoVO.setGender("男");
+                } else if (userInfoVO.getGender().equals("2")) {
+                    userInfoVO.setGender("女");
+                }else {
+                    userInfoVO.setGender("未知");
+                }
+            }
+            return userInfoVO;
+        } catch (Exception e) {
+            throw new GetUserInfoFailedException(MessageConstant.GET_USERINFO_FAILED);
         }
     }
 }

@@ -2,6 +2,7 @@ package edu.twt.rehuixiangshudong.mapper;
 
 import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
+import edu.twt.rehuixiangshudong.zoo.vo.UserInfoVO;
 import org.apache.ibatis.annotations.*;
 
 import java.sql.Timestamp;
@@ -77,4 +78,14 @@ public interface UserMapper {
      *            注意：mapper含有两个及以上的参数 需要使用@Param注解
      */
     void changeUserInfo(@Param("userInfo") UserInfoDTO userInfoDTO, Integer uid);
+
+    /**
+     * 获取用户信息
+     *
+     * @param uid ThreadLocalUtil类从token中获取的uid
+     * @return 返回UserInfoVo类
+     */
+    @Select("select uid,username,nickname,gender,birth_date,journal_count,journal_group_count,location,background_image,user_profile_picture" +
+            " from users where uid = #{uid}")
+    UserInfoVO getUserInfo(Integer uid);
 }

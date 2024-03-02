@@ -18,10 +18,10 @@ public class User {
     private String username;//用户的用户名
     private String nickname;//用户昵称
     private String password;//用户的密码
-    private int gender;//用户的性别 0未知 1男 2女
-    private String birthDate;//用户的生日 可空
-    private int journalCount;//用户拥有的日记数量
-    private int journalGroupCount;//用户拥有的日记串数量
+    private Integer gender;//用户的性别 0未知 1男 2女
+    private LocalDateTime birthDate;//用户的生日 可空
+    private Integer journalCount;//用户拥有的日记数量
+    private Integer journalGroupCount;//用户拥有的日记串数量
     private String location;//用户的地址 可空
     private String backgroundImage;//用户界面的背景图片 可空
     private String searchHistory;//用户搜索的历史记录备份 可空

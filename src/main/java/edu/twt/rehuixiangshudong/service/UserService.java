@@ -4,6 +4,7 @@ import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
+import edu.twt.rehuixiangshudong.zoo.vo.UserInfoVO;
 
 public interface UserService {
     /**
@@ -39,4 +40,11 @@ public interface UserService {
      * @param uid 用户uid
      */
     void changeUserInfo(UserInfoDTO changeUserInfoDTO, Integer uid);
+
+    /**
+     * 获取用户信息
+     * @param uid 从token中获取的uid
+     * @return 返回对象结果
+     */
+    UserInfoVO getUserInfo(Integer uid);
 }
