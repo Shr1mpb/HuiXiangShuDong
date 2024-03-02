@@ -51,4 +51,12 @@ public interface JournalGroupMapper {
     @Update("UPDATE journal_groups set journal_group_name = #{journalGroupName} where journal_group_id = #{journalGroupId} and " +
             "user_id_at = #{uid} and is_deleted = 0")
     void changeJournalGroupName(String journalGroupName, Integer uid, Integer journalGroupId);
+
+    /**
+     * 删除日记串
+     * @param uid 用户uid
+     * @param journalGroupId 要删除的日记串id
+     */
+    @Update("UPDATE journal_groups set is_deleted = 1 where user_id_at = #{uid} and journal_group_id = #{journalGroupId}")
+    void deleteJournalGroup(Integer uid, Integer journalGroupId);
 }

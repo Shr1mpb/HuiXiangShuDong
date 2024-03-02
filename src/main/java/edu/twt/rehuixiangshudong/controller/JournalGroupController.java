@@ -109,5 +109,20 @@ public class JournalGroupController {
         return Result.success(MessageConstant.CHANGE_JGNAME_SUCCESS);
 
     }
+    @PutMapping("/deleteJournalGroup")
+    public Result<Object> deleteJournalGroup(@RequestBody JournalGroupDTO journalGroupDTO) {
+        if (journalGroupDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        //获取token中的uid
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        Integer journalGroupId = journalGroupDTO.getJournalGroupId();
+
+        log.info("uid为 {} 的用户 删除 日记串id为 {} 的日记串 ",uid,journalGroupId);
+
+        journalGroupService.deleteJournalGroup(uid, journalGroupId);
+
+        return Result.success(MessageConstant.DELETE_JOURNAL_GROUP_SUCCESS);
+    }
 
 }

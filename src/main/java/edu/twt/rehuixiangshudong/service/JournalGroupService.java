@@ -36,4 +36,11 @@ public interface JournalGroupService {
      * @param journalGroupId 日记串id
      */
     void changeJournalGroupName(String journalGroupName, Integer uid, Integer journalGroupId);
+
+    /**
+     * 删除指定id的日记串
+     * @param uid 用户uid
+     * @param journalGroupId 要删除的日记串id
+     */
+    void deleteJournalGroup(Integer uid, Integer journalGroupId);
 }

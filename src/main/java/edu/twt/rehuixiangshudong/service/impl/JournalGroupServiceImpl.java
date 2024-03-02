@@ -4,10 +4,7 @@ import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
 import edu.twt.rehuixiangshudong.service.JournalGroupService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
-import edu.twt.rehuixiangshudong.zoo.exception.ChangeJournalGroupNameFailedException;
-import edu.twt.rehuixiangshudong.zoo.exception.CreateJournalGroupFailedException;
-import edu.twt.rehuixiangshudong.zoo.exception.GetJournalGroupFailedException;
-import edu.twt.rehuixiangshudong.zoo.exception.GetJournalsFailedException;
+import edu.twt.rehuixiangshudong.zoo.exception.*;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +89,31 @@ public class JournalGroupServiceImpl implements JournalGroupService {
             journalGroupMapper.changeJournalGroupName(journalGroupName, uid,journalGroupId);
         } catch (Exception e) {
             throw new ChangeJournalGroupNameFailedException(MessageConstant.CHANGE_JGNAME_FAILED);
+        }
+    }
+
+    /**
+     * 删除指定id的日记串
+     * @param uid 用户uid
+     * @param journalGroupId 要删除的日记串id
+     */
+    @Override
+    public void deleteJournalGroup(Integer uid, Integer journalGroupId) {
+        //先判断日记串是否存在 不存在返回错误信息
+        JournalGroupVO journalGroupVO = journalGroupMapper.getJournalGroup(uid, journalGroupId);
+        if (journalGroupVO == null) {
+            throw new DeleteJournalGroupFailedException(MessageConstant.GET_JOURNALGROUPS_FAILED);
+        }
+        //再判断日记串中是否含有日记 如果含有则删除失败
+        List<JournalVO> journalsInJournalGroup = journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId);
+        if (journalsInJournalGroup != null && !(journalsInJournalGroup.isEmpty())) {//日记串不空的情况
+            throw new DeleteJournalGroupFailedException(MessageConstant.DELETE_JOURNAL_GROUP_FAILED);
+        }
+        //进行删除
+        try {
+            journalGroupMapper.deleteJournalGroup(uid, journalGroupId);
+        } catch (Exception e) {
+            throw new DeleteJournalGroupFailedException(MessageConstant.DELETE_JOURNAL_GROUP_ERROR);
         }
     }
 }

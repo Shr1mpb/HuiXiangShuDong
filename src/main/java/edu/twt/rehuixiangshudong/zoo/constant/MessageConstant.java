@@ -135,7 +135,7 @@ public class MessageConstant {
     public static final String NO_JOURNAL_FOUND = "未发现日记！";
     public static final String EMPTY_DATA = "未设置";
     public static final String REGISTER_ERROR = "注册失败！";
-    public static final String COMMON_ERROR = "操作失败！请检查传递参数！";
+    public static final String COMMON_ERROR = "操作失败！请检查是否传递了参数！";
     public static final String GET_JOURNALGROUP_ERROR = "要查找的日记串不存在！！";
     public static final String MODIFY_JOURNAL_ERROR = "要修改的日记不存在！";
 }
