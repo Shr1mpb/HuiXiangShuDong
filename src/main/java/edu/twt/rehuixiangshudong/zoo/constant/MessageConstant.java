@@ -131,5 +131,6 @@ public class MessageConstant {
     public static final String DELETE_JOURNAL_FROM_JG_FAILED_NO_EXIST = "日记串或日记不存在！";
     public static final String DELETE_JOURNAL_FROM_JG_MATCH_FAILED = "该日记不在此日记串中！";
     public static final String DELETE_JOURNAL_FROM_ERROR = "从日记串移除日记失败！";
+    public static final String NOT_KNOWN_ERROR = "出现未知错误！请联系管理员！";
 }
 

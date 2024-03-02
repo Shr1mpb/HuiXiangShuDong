@@ -2,4 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.twt.rehuixiangshudong.mapper.JournalMapper">
+    <update id="modifyJournal">
+        update JOURNALS
+        <trim prefix="set" suffixOverrides=",">
+            <if test="location != null">location = #{location},</if>
+            <if test="journalTitle != null">journal_title = #{journalTitle},</if>
+            <if test="journalText != null">journal_text = #{journalText},</if>
+            <if test="topJournal != null">top_journal = #{topJournal},</if>
+            <if test="journalGroupIdAt != null">journal_group_id_at = #{journalGroupIdAt},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where user_id_at = #{userIdAt} and is_deleted = 0
+    </update>
 </mapper>

@@ -8,4 +8,10 @@ public interface JournalService {
      * @param journalDTO 传输日记的模版
      */
     void createJournal(JournalDTO journalDTO);
+
+    /**
+     * 修改日记信息 为空的内容不会更改
+     * @param journalDTO 传输日记的信息
+     */
+    void modifyJournal(JournalDTO journalDTO);
 }

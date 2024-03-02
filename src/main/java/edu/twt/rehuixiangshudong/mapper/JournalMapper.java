@@ -13,4 +13,11 @@ public interface JournalMapper {
     @Insert("insert into journals (location,journal_title,journal_text,top_journal,journal_group_id_at,user_id_at)" +
             " values (#{location},#{journalTitle},#{journalText},#{topJournal},#{journalGroupIdAt},#{userIdAt})")
     void createJournal(JournalDTO journalDTO);
+
+    /**
+     * 修改日记信息
+     * 为空的字样不会进行修改
+     * @param journalDTO
+     */
+    void modifyJournal(JournalDTO journalDTO);
 }
