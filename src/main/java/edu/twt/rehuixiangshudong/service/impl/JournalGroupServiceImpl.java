@@ -4,6 +4,7 @@ import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
 import edu.twt.rehuixiangshudong.service.JournalGroupService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
+import edu.twt.rehuixiangshudong.zoo.exception.ChangeJournalGroupNameFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.CreateJournalGroupFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.GetJournalGroupFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.GetJournalsFailedException;
@@ -46,8 +47,7 @@ public class JournalGroupServiceImpl implements JournalGroupService {
     public JournalGroupVO getJournalGroup(Integer uid, Integer journalGroupId) {
         //获取数据 失败返回错误结果
         try {
-            JournalGroupVO journalGroupVO = journalGroupMapper.getJournalGroup(uid, journalGroupId);
-            return journalGroupVO;
+            return journalGroupMapper.getJournalGroup(uid, journalGroupId);
         } catch (Exception e) {
             throw new GetJournalGroupFailedException(MessageConstant.GET_JOURNALGROUP_FAILED);
         }
@@ -68,10 +68,30 @@ public class JournalGroupServiceImpl implements JournalGroupService {
         }
         //日记串存在且属于自己 进行查询
         try {
-            List<JournalVO> journalVOS = journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId);
-            return journalVOS;
+            return journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId);
         } catch (Exception e) {
             throw new GetJournalsFailedException(MessageConstant.GET_JOURNALS_FAILED);
+        }
+    }
+
+    /**
+     * 修改日记串名字
+     * @param journalGroupName 修改后日记串名字
+     * @param uid 用户uid
+     * @param journalGroupId 日记串id
+     */
+    @Override
+    public void changeJournalGroupName(String journalGroupName, Integer uid, Integer journalGroupId) {
+        //先看看日记串存在不存在
+        JournalGroupVO journalGroupVO = journalGroupMapper.getJournalGroup(uid, journalGroupId);
+        if (journalGroupVO == null) {
+            throw new ChangeJournalGroupNameFailedException(MessageConstant.GET_JOURNALGROUP_ERROR);
+        }
+
+        try {
+            journalGroupMapper.changeJournalGroupName(journalGroupName, uid,journalGroupId);
+        } catch (Exception e) {
+            throw new ChangeJournalGroupNameFailedException(MessageConstant.CHANGE_JGNAME_FAILED);
         }
     }
 }

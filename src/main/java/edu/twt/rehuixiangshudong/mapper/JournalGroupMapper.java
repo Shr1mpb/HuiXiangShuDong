@@ -6,6 +6,7 @@ import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -37,7 +38,17 @@ public interface JournalGroupMapper {
      */
     @Select("SELECT journal_id,journal_title,created_at,modified_at,location,shared_count,journal_group_id_at,journal_text " +
             "FROM journals " +
-            "where journal_group_id_at = #{journalGroupId} and user_id_at = #{uid} " +
+            "where journal_group_id_at = #{journalGroupId} and user_id_at = #{uid} and is_deleted = 0 " +
             "ORDER BY created_at DESC")
     List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId);
+
+    /**
+     * 修改日记串名字
+     * @param journalGroupName 修改后日记串名字
+     * @param uid 用户uid
+     * @param journalGroupId 日记串id
+     */
+    @Update("UPDATE journal_groups set journal_group_name = #{journalGroupName} where journal_group_id = #{journalGroupId} and " +
+            "user_id_at = #{uid} and is_deleted = 0")
+    void changeJournalGroupName(String journalGroupName, Integer uid, Integer journalGroupId);
 }

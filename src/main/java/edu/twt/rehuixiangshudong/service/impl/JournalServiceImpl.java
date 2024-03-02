@@ -41,18 +41,26 @@ public class JournalServiceImpl implements JournalService {
      */
     @Override
     public void modifyJournal(JournalDTO journalDTO) {
-        //调用Mapper 修改日记信息 修改失败返回错误信息
-        //注意 如果用户传输的日记的JournalId与自己的uid不对应 则也会返回成功的字样
+        if (journalDTO == null) {
+            throw new ModifyJournalFailedException(MessageConstant.COMMON_ERROR);
+        }
 
+        //先看看日记属不属于自己 不属于自己则返回错误信息
+        JournalVO journalVO = journalMapper.getJournalByJID(journalDTO);
+        if (journalVO == null) {
+            throw new ModifyJournalFailedException(MessageConstant.MODIFY_JOURNAL_ERROR);
+        }
+
+        //调用Mapper 修改日记信息 修改失败返回错误信息
         //限制topJournal传输0/1
-        if (journalDTO != null && journalDTO.getTopJournal() != null) {
+        if (journalDTO.getTopJournal() != null) {
             int topJournal = journalDTO.getTopJournal();
             if(topJournal != 0 && topJournal!= 1 ){
                 throw new SetTopJournalFailedException(MessageConstant.SET_TOPJOURNAL_FAILED);
             }
         }
         //限制isDeleted传输0/1
-        if (journalDTO != null && journalDTO.getIsDeleted() != null) {
+        if (journalDTO.getIsDeleted() != null) {
             int isDeleted = journalDTO.getIsDeleted();
             //限制topJournal传输0或1
             if(isDeleted != 0 && isDeleted  != 1 ){

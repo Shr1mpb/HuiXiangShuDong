@@ -86,4 +86,28 @@ public class JournalGroupController {
 
     }
 
+    /**
+     * 修改日记串名称
+     * @param journalGroupDTO 传入日记串id和日记串名称
+     * @return 返回成功与否信息
+     */
+    @PutMapping("/changeJournalGroupName")
+    public Result<Object> changeJournalGroupName(@RequestBody JournalGroupDTO journalGroupDTO) {
+        //获取token中的uid
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        if (journalGroupDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+
+        //从DTO中获取数据
+        String journalGroupName = journalGroupDTO.getJournalGroupName();
+        Integer journalGroupId = journalGroupDTO.getJournalGroupId();
+        log.info("uid为 {} 的用户修改日记串 {} 名称",uid,journalGroupId);
+
+        journalGroupService.changeJournalGroupName(journalGroupName,uid,journalGroupId);
+
+        return Result.success(MessageConstant.CHANGE_JGNAME_SUCCESS);
+
+    }
+
 }

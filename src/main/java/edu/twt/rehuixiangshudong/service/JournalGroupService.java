@@ -28,4 +28,12 @@ public interface JournalGroupService {
      * @return List集合
      */
     List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId);
+
+    /**
+     * 修改日记串名字
+     * @param journalGroupName 修改后日记串名字
+     * @param uid 用户uid
+     * @param journalGroupId 日记串id
+     */
+    void changeJournalGroupName(String journalGroupName, Integer uid, Integer journalGroupId);
 }
