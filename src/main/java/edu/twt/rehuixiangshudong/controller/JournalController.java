@@ -5,6 +5,7 @@ import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
+import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,11 +38,11 @@ public class JournalController {
 
     /**
      * 修改日记
-     * @param journalDTO
+     * @param journalDTO 传输修改日记的参数
      * @return 返回修改成功信息
      */
-    @PutMapping     ("/modifyJournal")
-    public Result<Object> modifyJournal(@RequestBody JournalDTO journalDTO, @RequestHeader("token") String token){
+    @PutMapping("/modifyJournal")
+    public Result<Object> modifyJournal(@RequestBody JournalDTO journalDTO){
         //获取token中的uid
         Integer uid = ThreadLocalUtil.getCurrentUid();
 
@@ -53,6 +54,28 @@ public class JournalController {
         journalService.modifyJournal(journalDTO);
 
         return Result.success(MessageConstant.MODIFY_JOURNAL_SUCCESS);
+
+    }
+
+    /**
+     * 根据日记id获取日记信息
+     * @param journalDTO 传输日记id
+     */
+    @GetMapping("/getJournalByJID")
+    public Result<JournalVO> getJournalByJID(@RequestBody JournalDTO journalDTO) {
+        //根据token获取uid
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        if (journalDTO != null) {
+            journalDTO.setUserIdAt(uid);
+            log.info("uid为 {} 的用户获取指定日记id为 {} 的日记信息",uid,journalDTO.getJournalId());
+        }
+
+
+        JournalVO journal = journalService.getJournalByJID(journalDTO);
+        if (journal == null) {
+            return Result.fail(MessageConstant.NO_JOURNAL_FOUND);
+        }
+        return Result.success(journal);
 
     }
 

@@ -5,8 +5,10 @@ import edu.twt.rehuixiangshudong.service.JournalService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
 import edu.twt.rehuixiangshudong.zoo.exception.CreateJournalFailedException;
+import edu.twt.rehuixiangshudong.zoo.exception.GetJournalsFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.ModifyJournalFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.SetTopJournalFailedException;
+import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +66,21 @@ public class JournalServiceImpl implements JournalService {
             journalMapper.modifyJournal(journalDTO);
         } catch (Exception e) {
             throw new ModifyJournalFailedException(MessageConstant.MODIFY_JOURNAL_FAILED);
+        }
+    }
+
+    /**
+     * 根据日记id获取日记信息
+     * @param journalDTO 传输日记id和uid
+     * @return 返回JournalVO对象
+     */
+    @Override
+    public JournalVO getJournalByJID(JournalDTO journalDTO) {
+
+        try {
+            return journalMapper.getJournalByJID(journalDTO);
+        } catch (Exception e) {
+            throw new GetJournalsFailedException(MessageConstant.GET_JOURNALS_FAILED);
         }
     }
 }

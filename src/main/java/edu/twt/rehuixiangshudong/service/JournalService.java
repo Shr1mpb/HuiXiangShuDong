@@ -1,6 +1,7 @@
 package edu.twt.rehuixiangshudong.service;
 
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
+import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 
 public interface JournalService {
     /**
@@ -14,4 +15,11 @@ public interface JournalService {
      * @param journalDTO 传输日记的信息
      */
     void modifyJournal(JournalDTO journalDTO);
+
+    /**
+     * 根据日记id获取日记信息
+     * @param journalDTO 传输日记id和uid
+     * @return journalVO对象
+     */
+    JournalVO getJournalByJID(JournalDTO journalDTO);
 }

@@ -10,7 +10,7 @@ import java.io.Serializable;
 @ApiModel(description = "创建和修改日记时的数据传输模型")
 public class JournalDTO implements Serializable {
     @ApiModelProperty("日记的id")
-    private int journalId;
+    private Integer journalId;
     @ApiModelProperty("日记创建的地点")
     private String location;
     @ApiModelProperty("日记标题")
