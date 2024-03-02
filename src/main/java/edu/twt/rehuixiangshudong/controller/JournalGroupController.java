@@ -109,6 +109,12 @@ public class JournalGroupController {
         return Result.success(MessageConstant.CHANGE_JGNAME_SUCCESS);
 
     }
+
+    /**
+     * 删除日记串的功能
+     * @param journalGroupDTO 删除的日记串的id
+     * @return 返回信息结果
+     */
     @PutMapping("/deleteJournalGroup")
     public Result<Object> deleteJournalGroup(@RequestBody JournalGroupDTO journalGroupDTO) {
         if (journalGroupDTO == null) {
@@ -124,5 +130,22 @@ public class JournalGroupController {
 
         return Result.success(MessageConstant.DELETE_JOURNAL_GROUP_SUCCESS);
     }
+    /**
+     * 添加单个日记到日记串中
+     * @param journalGroupDTO 要添加的日记id 添加进的日记串id
+     * @return 返回信息结果
+     */
+    @PutMapping("/addJournalToJournalGroup")
+    public Result<Object> addJournalToJournalGroup(@RequestBody JournalGroupDTO journalGroupDTO) {
+        //获取token中的uid
+        int uid = ThreadLocalUtil.getCurrentUid();
+        int journalId = journalGroupDTO.getJournalId();
+        int journalGroupId = journalGroupDTO.getJournalGroupId();
+        log.info("uid为 {} 的用户添加日记id {} 到日记串id {} ",uid,journalId,journalGroupId);
 
+        journalGroupService.addJournalToJournalGroup(uid, journalId, journalGroupId);
+
+        return Result.success(MessageConstant.ADD_JOURNAL_SUCCESS);
+
+    }
 }

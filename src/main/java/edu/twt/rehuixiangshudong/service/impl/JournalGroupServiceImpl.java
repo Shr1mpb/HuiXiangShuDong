@@ -1,6 +1,7 @@
 package edu.twt.rehuixiangshudong.service.impl;
 
 import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
+import edu.twt.rehuixiangshudong.mapper.JournalMapper;
 import edu.twt.rehuixiangshudong.service.JournalGroupService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
@@ -16,6 +17,8 @@ import java.util.List;
 public class JournalGroupServiceImpl implements JournalGroupService {
     @Autowired
     private JournalGroupMapper journalGroupMapper;
+    @Autowired
+    private JournalMapper journalMapper;
 
     /**
      * 创建日记串
@@ -25,7 +28,7 @@ public class JournalGroupServiceImpl implements JournalGroupService {
     public void createJournalGroup(JournalGroupDTO journalGroupDTO) {
         try {
             //如果传输的名字是空字符串 则设置为“未设置”
-            if (journalGroupDTO.getJournalGroupName().equals("")) {
+            if (journalGroupDTO.getJournalGroupName().isEmpty()) {
                 journalGroupDTO.setJournalGroupName(MessageConstant.EMPTY_DATA);
             }
             journalGroupMapper.createJournalGroup(journalGroupDTO);
@@ -115,5 +118,32 @@ public class JournalGroupServiceImpl implements JournalGroupService {
         } catch (Exception e) {
             throw new DeleteJournalGroupFailedException(MessageConstant.DELETE_JOURNAL_GROUP_ERROR);
         }
+    }
+
+    /**
+     * 添加日记到指定日记串
+     * @param uid 用户的uid
+     * @param journalId 日记id
+     * @param journalGroupId 日记串id
+     */
+    @Override
+    public void addJournalToJournalGroup(int uid, int journalId, int journalGroupId) {
+        //先判断日记是否位于日记串中
+        JournalVO journalVO1 = journalMapper.checkJournalInJournalGroup(journalId,journalGroupId);
+        if (journalVO1 != null) {
+            throw new AddJournalToJournalGroupFailedException(MessageConstant.ADD_JOURNAL_FAILED_EXIST);
+        }
+        //再判断日记和日记串是否属于自己
+        JournalVO journalVO = journalMapper.getJournalByJID2(uid,journalId);
+        JournalGroupVO journalGroupVO = journalGroupMapper.getJournalGroup(uid,journalGroupId);
+        //不属于自己 给出添加失败结果
+        if (journalVO == null || journalGroupVO == null) {
+            throw new AddJournalToJournalGroupFailedException(MessageConstant.ADD_JOURNAL_FAILED);
+        }
+
+
+        //属于自己且不包含在该日记串中，进行更改
+        journalGroupMapper.addJournalToJournalGroup(uid,journalId,journalGroupId);
+
     }
 }
