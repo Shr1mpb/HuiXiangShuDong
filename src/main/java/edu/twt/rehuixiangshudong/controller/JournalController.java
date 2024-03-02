@@ -28,6 +28,8 @@ public class JournalController {
         Integer uid = ThreadLocalUtil.getCurrentUid();
         if (journalDTO != null) {//非空判断 防止空指针异常
             journalDTO.setUserIdAt(uid);
+        }else {
+            return Result.fail(MessageConstant.CREATE_JOURNAL_FAILED);
         }
 
         log.info("uid为 {} 的用户创建日记 {}",uid,journalDTO);
@@ -50,6 +52,8 @@ public class JournalController {
 
         if (journalDTO != null) {//非空判断 防止空指针异常
             journalDTO.setUserIdAt(uid);
+        }else {
+            return Result.fail(MessageConstant.MODIFY_JOURNAL_FAILED);
         }
         journalService.modifyJournal(journalDTO);
 
@@ -68,6 +72,8 @@ public class JournalController {
         if (journalDTO != null) {
             journalDTO.setUserIdAt(uid);
             log.info("uid为 {} 的用户获取指定日记id为 {} 的日记信息",uid,journalDTO.getJournalId());
+        }else {
+            return Result.fail(MessageConstant.GET_JOURNALS_FAILED);
         }
 
 

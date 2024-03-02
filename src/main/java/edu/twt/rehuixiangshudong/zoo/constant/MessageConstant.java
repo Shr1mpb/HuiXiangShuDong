@@ -134,5 +134,7 @@ public class MessageConstant {
     public static final String NOT_KNOWN_ERROR = "出现未知错误！请联系管理员！";
     public static final String NO_JOURNAL_FOUND = "未发现日记！";
     public static final String EMPTY_DATA = "未设置";
+    public static final String REGISTER_ERROR = "注册失败！";
+    public static final String COMMON_ERROR = "操作失败！请检查传递参数！";
 }
 

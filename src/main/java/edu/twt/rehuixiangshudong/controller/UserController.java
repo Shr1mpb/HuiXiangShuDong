@@ -13,11 +13,9 @@ import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.JwtUtil;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserRegisterAndLoginVO;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +34,9 @@ public class UserController {
      */
     @PostMapping("/register")
     public Result<UserRegisterAndLoginVO> register(@RequestBody UserRegisterAndLoginDTO userRegisterAndLoginDTO) throws InterruptedException {
+        if (userRegisterAndLoginDTO == null) {
+            return Result.fail(MessageConstant.REGISTER_ERROR);
+        }
         log.info("用户注册：{}", userRegisterAndLoginDTO);
 
         User user = userService.register(userRegisterAndLoginDTO);
@@ -119,6 +120,9 @@ public class UserController {
      */
     @PutMapping("/changePassword")
     public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        if (changePasswordDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
         Integer uid = ThreadLocalUtil.getCurrentUid();
         log.info("uid {} 修改密码 {}", uid, changePasswordDTO);
 
@@ -150,6 +154,9 @@ public class UserController {
      */
     @PutMapping("/changeUserInfo")
     public Result<Object> changeUserInfo(@RequestBody UserInfoDTO changeUserInfoDTO) {
+        if (changeUserInfoDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
         //获取token中的uid
         Integer uid = ThreadLocalUtil.getCurrentUid();
         log.info("uid为 {} 的用户修改用户信息 {}", uid, changeUserInfoDTO);
