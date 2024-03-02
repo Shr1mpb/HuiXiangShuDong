@@ -5,6 +5,7 @@ import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
+import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,4 +37,30 @@ public class JournalGroupController {
 
         return Result.success(MessageConstant.CREATE_JOURNAL_GROUP_SUCCESS);
     }
+    /**
+     * 获取指定id的日记串
+     * @param journalGroupDTO 传输日记串id
+     * @return JournalGroupVO模型
+     */
+    @GetMapping("/getJournalGroup")
+    public Result<JournalGroupVO> getJournalGroup(@RequestBody JournalGroupDTO journalGroupDTO) {
+        //获取token中的uid
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        if (journalGroupDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        Integer journalGroupId = journalGroupDTO.getJournalGroupId();
+
+        log.info("uid为 {} 的用户 查询 日记串id为 {} 的日记串 ",uid,journalGroupId);
+
+        JournalGroupVO journalGroupVO = journalGroupService.getJournalGroup(uid, journalGroupId);
+
+        //查询日记为空 定义返回结果
+        if (journalGroupVO == null) {
+            return Result.fail(MessageConstant.GET_JOURNALGROUP_ERROR);
+        }
+        return Result.success(journalGroupVO);
+    }
+
+
 }

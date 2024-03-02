@@ -136,5 +136,6 @@ public class MessageConstant {
     public static final String EMPTY_DATA = "未设置";
     public static final String REGISTER_ERROR = "注册失败！";
     public static final String COMMON_ERROR = "操作失败！请检查传递参数！";
+    public static final String GET_JOURNALGROUP_ERROR = "该日记串为空！";
 }
 
