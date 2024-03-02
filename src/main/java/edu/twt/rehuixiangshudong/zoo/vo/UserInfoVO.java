@@ -10,16 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 /**
  * 获取用户全部信息时用
  * 返回生日时使用@JsonFormat返回中文数据
  * 返回性别时遵循 0未知 1男 2女
  */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(description = "返回用户信息时的数据格式")
 public class UserInfoVO implements Serializable {
     @ApiModelProperty("用户的uid")
