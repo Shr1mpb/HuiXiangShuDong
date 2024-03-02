@@ -22,4 +22,10 @@ public interface JournalService {
      * @return journalVO对象
      */
     JournalVO getJournalByJID(JournalDTO journalDTO);
+
+    /**
+     * 在日记串中创建日记
+     * @param journalDTO 传输日记的相关信息
+     */
+    void createJournalAtJournalGroup(JournalDTO journalDTO);
 }

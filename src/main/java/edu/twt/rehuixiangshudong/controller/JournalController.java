@@ -23,14 +23,12 @@ public class JournalController {
      */
     @PostMapping("/createJournal")
     public Result<Object> createJournal(@RequestBody JournalDTO journalDTO){
-
+        if (journalDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
         //获取token中的uid,并将其设置到journalDTO中
         Integer uid = ThreadLocalUtil.getCurrentUid();
-        if (journalDTO != null) {//非空判断 防止空指针异常
-            journalDTO.setUserIdAt(uid);
-        }else {
-            return Result.fail(MessageConstant.CREATE_JOURNAL_FAILED);
-        }
+        journalDTO.setUserIdAt(uid);
 
         log.info("uid为 {} 的用户创建日记 {}",uid,journalDTO);
         journalService.createJournal(journalDTO);
@@ -83,6 +81,19 @@ public class JournalController {
         }
         return Result.success(journal);
 
+    }
+
+    @PostMapping("/createJournalAtJournalGroup")
+    public Result<Object> createJournalAtJournalGroup(@RequestBody JournalDTO journalDTO) {
+        //获取token中的uid,并将其设置到journalDTO中
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        journalDTO.setUserIdAt(uid);
+        Integer journalGroupId = journalDTO.getJournalGroupIdAt();
+        log.info("uid为 {} 的用户在 日记串{} 中创建日记 {}",uid,journalGroupId,journalDTO);
+
+        journalService.createJournalAtJournalGroup(journalDTO);
+
+        return Result.success(MessageConstant.CREATE_JOURNAL_SUCCESS);
     }
 
 }

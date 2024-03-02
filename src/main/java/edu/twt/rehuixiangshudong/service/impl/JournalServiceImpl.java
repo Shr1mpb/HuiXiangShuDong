@@ -1,5 +1,6 @@
 package edu.twt.rehuixiangshudong.service.impl;
 
+import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
 import edu.twt.rehuixiangshudong.mapper.JournalMapper;
 import edu.twt.rehuixiangshudong.service.JournalService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
@@ -8,6 +9,7 @@ import edu.twt.rehuixiangshudong.zoo.exception.CreateJournalFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.GetJournalsFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.ModifyJournalFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.SetTopJournalFailedException;
+import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class JournalServiceImpl implements JournalService {
     @Autowired
     private JournalMapper journalMapper;
+    @Autowired
+    private JournalGroupMapper journalGroupMapper;
 
     /**
      * 创建日记功能
@@ -29,6 +33,26 @@ public class JournalServiceImpl implements JournalService {
 
         try {
                 journalDTO.setJournalGroupIdAt(0);
+            journalMapper.createJournal(journalDTO);
+        } catch (Exception e) {
+            throw new CreateJournalFailedException(MessageConstant.CREATE_JOURNAL_FAILED);
+        }
+    }
+
+    /**
+     * 在日记串中创建日记功能
+     * @param journalDTO 传输日记的相关信息
+     */
+
+    @Override
+    public void createJournalAtJournalGroup(JournalDTO journalDTO) {
+        //先判断日记串是不是自己的 如果不是返回错误结果
+        JournalGroupVO journalGroup = journalGroupMapper.getJournalGroup(journalDTO.getUserIdAt(), journalDTO.getJournalGroupIdAt());
+        if (journalGroup == null) {
+            throw new CreateJournalFailedException(MessageConstant.JOURNAL_GROUP_MATCH_FAILED);
+        }
+
+        try {
             journalMapper.createJournal(journalDTO);
         } catch (Exception e) {
             throw new CreateJournalFailedException(MessageConstant.CREATE_JOURNAL_FAILED);
