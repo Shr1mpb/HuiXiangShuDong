@@ -68,4 +68,12 @@ public interface JournalGroupMapper {
      */
     @Update("UPDATE journals set journal_group_id_at = #{journalGroupId} where user_id_at = #{uid} and journal_id = #{journalId}")
     void addJournalToJournalGroup(int uid, int journalId, int journalGroupId);
+
+    /**
+     * 从日记串中移除日记 (设置journal_group_id_at = 0)
+     * @param uid 用户uid
+     * @param journalId 日记id
+     */
+    @Update("UPDATE journals set journal_group_id_at = 0 where user_id_at = #{uid} and journal_id = #{journalId}")
+    void deleteJournalFromJournalGroup(int uid, int journalId);
 }

@@ -146,4 +146,32 @@ public class JournalGroupServiceImpl implements JournalGroupService {
         journalGroupMapper.addJournalToJournalGroup(uid,journalId,journalGroupId);
 
     }
+
+    /**
+     * 把日记从日记串中移除
+     * @param uid 用户uid
+     * @param journalGroupId 日记串id
+     * @param journalId 日记id
+     */
+    @Override
+    public void deleteJournalFromJournalGroup(int uid, int journalGroupId, int journalId) {
+        //先判断日记串和日记是否存在
+        JournalVO journalVO = journalMapper.getJournalByJID2(uid,journalId);
+        JournalGroupVO journalGroupVO = journalGroupMapper.getJournalGroup(uid, journalGroupId);
+        if (journalGroupVO == null || journalVO == null) {//日记或日记串不存在
+            throw new DeleteJournalFromJGFailedException(MessageConstant.DELETE_JOURNAL_FROM_JG_FAILED_NO_EXIST);
+        }
+        //再判断日记是否属于该日记串
+        JournalVO journalByJIDandJGID = journalMapper.checkJournalInJournalGroup(journalId, journalGroupId);
+        if (journalByJIDandJGID == null) {//日记本就不在该日记串中
+            throw new DeleteJournalFromJGFailedException(MessageConstant.DELETE_JOURNAL_FROM_JG_MATCH_FAILED);
+        }
+        //删除
+
+        try {
+            journalGroupMapper.deleteJournalFromJournalGroup(uid, journalId);
+        } catch (Exception e) {
+            throw new DeleteJournalFromJGFailedException(MessageConstant.DELETE_JOURNAL_FROM_ERROR);
+        }
+    }
 }

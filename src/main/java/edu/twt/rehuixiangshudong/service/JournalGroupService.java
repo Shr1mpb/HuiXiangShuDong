@@ -51,4 +51,12 @@ public interface JournalGroupService {
      * @param journalGroupId 日记串id
      */
     void addJournalToJournalGroup(int uid, int journalId, int journalGroupId);
+
+    /**
+     * 把日记从日记串中移除
+     * @param uid 用户uid
+     * @param journalGroupId 日记串id
+     * @param journalId 日记id
+     */
+    void deleteJournalFromJournalGroup(int uid, int journalGroupId, int journalId);
 }

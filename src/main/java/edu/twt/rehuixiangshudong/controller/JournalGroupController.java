@@ -7,10 +7,14 @@ import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping
@@ -147,5 +151,25 @@ public class JournalGroupController {
 
         return Result.success(MessageConstant.ADD_JOURNAL_SUCCESS);
 
+    }
+
+    /**
+     * 把日记从日记串中移除
+     * @param journalGroupDTO
+     * @return
+     */
+    @PutMapping("/deleteJournalFromJournalGroup")
+    public Result<Object> deleteJournalFromJournalGroup(@RequestBody JournalGroupDTO journalGroupDTO) {
+        if (journalGroupDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        //获取token中的uid
+        int uid = ThreadLocalUtil.getCurrentUid();
+        int journalGroupId = journalGroupDTO.getJournalGroupId();
+        int journalId = journalGroupDTO.getJournalId();
+
+        journalGroupService.deleteJournalFromJournalGroup(uid, journalGroupId, journalId);
+
+        return Result.success(MessageConstant.DELETE_JOURNAL_FROM_JG_SUCCESS);
     }
 }
