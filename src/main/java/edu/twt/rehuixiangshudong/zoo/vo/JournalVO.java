@@ -1,5 +1,6 @@
 package edu.twt.rehuixiangshudong.zoo.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,10 @@ public class JournalVO implements Serializable {
     @ApiModelProperty("日记的标题")
     private String journalTitle;
     @ApiModelProperty("日记的创建时间")
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH-mm-ss")
     private LocalDateTime createdAt;
     @ApiModelProperty("日记的修改时间")
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH-mm-ss")
     private LocalDateTime modifiedAt;
     @ApiModelProperty("日记的创建地点")
     private String location;
