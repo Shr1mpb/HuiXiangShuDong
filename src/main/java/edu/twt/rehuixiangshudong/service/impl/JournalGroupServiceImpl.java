@@ -16,6 +16,10 @@ public class JournalGroupServiceImpl implements JournalGroupService {
     @Override
     public void createJournalGroup(JournalGroupDTO journalGroupDTO) {
         try {
+            //如果传输的名字是空字符串 则设置为“未设置”
+            if (journalGroupDTO.getJournalGroupName().equals("")) {
+                journalGroupDTO.setJournalGroupName(MessageConstant.EMPTY_DATA);
+            }
             journalGroupMapper.createJournalGroup(journalGroupDTO);
         } catch (Exception e) {
             throw new CreateJournalGroupFailedException(MessageConstant.CREATE_JOURNAL_GROUP_FAILED);
