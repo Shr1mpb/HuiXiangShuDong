@@ -4,6 +4,7 @@ import edu.twt.rehuixiangshudong.mapper.UserMapper;
 import edu.twt.rehuixiangshudong.service.UserService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
 import edu.twt.rehuixiangshudong.zoo.exception.*;
@@ -117,5 +118,20 @@ public class UserServiceImpl implements UserService {
         //进行登出操作，即更新用户的最后登录时间即可
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         userMapper.updateLastLoginTimeByUid(uid, timestamp);
+    }
+
+    /**
+     * 设置和更改用户信息服务
+     * @param changeUserInfoDTO 传输用户信息
+     * @param uid 用户uid
+     */
+    @Override
+    public void changeUserInfo(UserInfoDTO changeUserInfoDTO, Integer uid) {
+
+        try {
+            userMapper.changeUserInfo(changeUserInfoDTO, uid);
+        } catch (Exception e) {
+            throw new NicknameAlreadyExistException(MessageConstant.NICKNAME_EXIST);
+        }
     }
 }

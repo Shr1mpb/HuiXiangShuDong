@@ -4,6 +4,7 @@ import edu.twt.rehuixiangshudong.service.UserService;
 import edu.twt.rehuixiangshudong.zoo.constant.JwtClaimsConstant;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
 import edu.twt.rehuixiangshudong.zoo.properties.JwtProperties;
@@ -11,12 +12,9 @@ import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.JwtUtil;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserRegisterAndLoginVO;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -134,5 +132,21 @@ public class UserController {
         userService.logout(uid);
 
         return new Result(MessageConstant.LOGOUT_SUCCEED);
+    }
+
+    /**
+     * 设置和更改用户信息
+     * @param changeUserInfoDTO 传输要更改的信息
+     * @return 返回成功信息
+     */
+    @PutMapping("/changeUserInfo")
+    public Result<Object> changeUserInfo(@RequestBody UserInfoDTO changeUserInfoDTO){
+        //获取token中的uid
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        log.info("uid为 {} 的用户修改用户信息 {}",uid,changeUserInfoDTO);
+
+        userService.changeUserInfo(changeUserInfoDTO,uid);
+
+        return Result.success(MessageConstant.CHANGE_USERINFO_SUCCESS);
     }
 }

@@ -1,10 +1,8 @@
 package edu.twt.rehuixiangshudong.mapper;
 
+import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.sql.Timestamp;
 
@@ -71,4 +69,12 @@ public interface UserMapper {
      */
     @Update("update USERS set password = #{newPassword} WHERE uid = #{uid} and password = #{oldPassword}")
     void changePassword(Integer uid, String oldPassword, String newPassword);
+
+    /**
+     * 修改用户信息
+     * @param userInfoDTO 传递用户信息
+     * @param uid 传递uid
+     *            注意：mapper含有两个及以上的参数 需要使用@Param注解
+     */
+    void changeUserInfo(@Param("userInfo") UserInfoDTO userInfoDTO, Integer uid);
 }

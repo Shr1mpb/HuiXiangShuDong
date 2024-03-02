@@ -2,4 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.twt.rehuixiangshudong.mapper.UserMapper">
+    <update id="changeUserInfo" parameterType="edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO">
+        update users
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userInfo.nickname != null">nickname = #{userInfo.nickname},</if>
+            <if test="userInfo.gender != null">gender = #{userInfo.gender},</if>
+            <if test="userInfo.birthDate != null">birth_date = #{userInfo.birthDate},</if>
+            <if test="userInfo.location != null">location = #{userInfo.location},</if>
+            <if test="userInfo.backgroundImage != null">background_image = #{userInfo.backgroundImage},</if>
+            <if test="userInfo.userProfilePicture != null">user_profile_picture = #{userInfo.userProfilePicture},</if>
+            <if test="userInfo.searchHistory != null">search_history = #{userInfo.searchHistory},</if>
+        </trim>
+        where uid = #{uid}
+    </update>
 </mapper>

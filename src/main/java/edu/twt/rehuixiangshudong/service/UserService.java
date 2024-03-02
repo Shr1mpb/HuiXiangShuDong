@@ -1,6 +1,7 @@
 package edu.twt.rehuixiangshudong.service;
 
 import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
 
@@ -31,4 +32,11 @@ public interface UserService {
      * @param uid 用户uid
      */
     void logout(Integer uid);
+
+    /**
+     * 设置和更改用户信息
+     * @param changeUserInfoDTO 传输用户信息
+     * @param uid 用户uid
+     */
+    void changeUserInfo(UserInfoDTO changeUserInfoDTO, Integer uid);
 }
