@@ -6,9 +6,13 @@ import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
 import edu.twt.rehuixiangshudong.zoo.exception.CreateJournalGroupFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.GetJournalGroupFailedException;
+import edu.twt.rehuixiangshudong.zoo.exception.GetJournalsFailedException;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
+import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class JournalGroupServiceImpl implements JournalGroupService {
@@ -46,6 +50,28 @@ public class JournalGroupServiceImpl implements JournalGroupService {
             return journalGroupVO;
         } catch (Exception e) {
             throw new GetJournalGroupFailedException(MessageConstant.GET_JOURNALGROUP_FAILED);
+        }
+    }
+
+    /**
+     * 获取指定日记串id中的日记
+     * @param uid 用户的uid
+     * @param journalGroupId 传输日记串id
+     * @return 返回List集合
+     */
+    @Override
+    public List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId) {
+        //先判断日记串属不属于自己
+        JournalGroupVO journalGroupVO = journalGroupMapper.getJournalGroup(uid,journalGroupId);
+        if (journalGroupVO == null) {//如果日记串不存在 返回日记串不存在字样
+            throw new GetJournalsFailedException(MessageConstant.JOURNAL_GROUP_MATCH_FAILED);
+        }
+        //日记串存在且属于自己 进行查询
+        try {
+            List<JournalVO> journalVOS = journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId);
+            return journalVOS;
+        } catch (Exception e) {
+            throw new GetJournalsFailedException(MessageConstant.GET_JOURNALS_FAILED);
         }
     }
 }

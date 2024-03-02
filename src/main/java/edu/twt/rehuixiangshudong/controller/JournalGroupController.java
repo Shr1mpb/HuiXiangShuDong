@@ -6,9 +6,11 @@ import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
+import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -62,5 +64,26 @@ public class JournalGroupController {
         return Result.success(journalGroupVO);
     }
 
+    /**
+     * 获取日记串中的全部日记
+     * @param journalGroupDTO 传输日记串id
+     * @return 返回List集合对象
+     */
+    @GetMapping("/getJournalsInJournalGroup")
+    public Result<List<JournalVO>> getJournalsInJournalGroup(@RequestBody JournalGroupDTO journalGroupDTO) {
+        //获取token中的uid
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        if (journalGroupDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        Integer journalGroupId = journalGroupDTO.getJournalGroupId();
+
+        log.info("uid为 {} 的用户 查询 日记串id为 {} 的日记串中的全部日记 ",uid,journalGroupId);
+
+        List<JournalVO> journalVOS = journalGroupService.getJournalsInJournalGroup(uid, journalGroupId);
+
+        return Result.success(journalVOS);
+
+    }
 
 }

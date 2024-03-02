@@ -28,9 +28,7 @@ public class JournalServiceImpl implements JournalService {
     public void createJournal(JournalDTO journalDTO) {
 
         try {
-            if (journalDTO.getJournalGroupIdAt() == null) {
                 journalDTO.setJournalGroupIdAt(0);
-            }
             journalMapper.createJournal(journalDTO);
         } catch (Exception e) {
             throw new CreateJournalFailedException(MessageConstant.CREATE_JOURNAL_FAILED);
