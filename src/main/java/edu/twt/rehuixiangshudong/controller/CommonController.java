@@ -32,15 +32,16 @@ public class CommonController {
         log.info("用户 {} 文件上传: {}",uid,file);
 
         try {
-            //获取原始文件名
+            //获取原始文件名 并获取文件拓展名 并且用uuid拼接
             String originalFilename = file.getOriginalFilename();
             String extension = Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf("."));
             String objectName = UUID.randomUUID() + extension;
+            //上传文件
             String filePath = aliOssUtil.upload(file.getBytes(), objectName);
             return Result.success(filePath);
 
         } catch (IOException e) {
-            log.error("文件上传失败！:{}",e);
+            log.error("文件上传失败！:{}",e.getMessage());
         }
 
         return Result.fail(MessageConstant.UPLOAD_FAILED);

@@ -160,4 +160,15 @@ public class UserServiceImpl implements UserService {
             throw new GetUserInfoFailedException(MessageConstant.GET_USERINFO_FAILED);
         }
     }
+
+    /**
+     * 上传并更改用户头像
+     * @param filePath 上传成功后文件路径
+     */
+    @Override
+    public void uploadUserProfilePicture(String filePath,Integer uid) {
+
+        userMapper.uploadUserProfilePicture(filePath, uid);
+
+    }
 }

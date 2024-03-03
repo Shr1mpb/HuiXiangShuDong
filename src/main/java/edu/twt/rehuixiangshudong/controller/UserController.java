@@ -4,6 +4,7 @@ import edu.twt.rehuixiangshudong.service.UserService;
 import edu.twt.rehuixiangshudong.zoo.constant.JwtClaimsConstant;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
+import edu.twt.rehuixiangshudong.zoo.util.AliOssUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserInfoVO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
@@ -16,9 +17,13 @@ import edu.twt.rehuixiangshudong.zoo.vo.UserRegisterAndLoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping
@@ -28,6 +33,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private JwtProperties jwtProperties;
+    @Autowired
+    private AliOssUtil aliOssUtil;
 
     /**
      * 用户注册
@@ -186,8 +193,36 @@ public class UserController {
 
     }
 
-    @GetMapping("/laozhanyou")
-    public Result<Object> laozhanyou() {
-        return Result.success("我操你妈");
+    /**
+     * 上传并修改用户头像
+     *
+     * @return 返回成功与否 信息结果
+     */
+    @PostMapping("/uploadUserProfilePicture")
+    public Result<Object> uploadUserProfilePicture(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+
+        log.info("uid为 {} 的用户 上传并修改头像", uid);
+        //获取原始文件名 并获取文件拓展名 并且用uuid拼接
+        String originalFilename = file.getOriginalFilename();
+        String extension = Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf("."));
+        String objectName = UUID.randomUUID() + extension;
+        //若扩展名不是 jpg 或 png
+        if (!(extension.equals(".jpg") || extension.equals(".png"))) {
+            return Result.fail(MessageConstant.UPLOAD_FILE_UNMATCHED);
+        }
+        //上传文件
+        try {
+            String filePath = aliOssUtil.upload(file.getBytes(), objectName);
+
+            //上传成功
+            userService.uploadUserProfilePicture(filePath,uid);
+            return Result.success(MessageConstant.CHANGE_PROFILE_PICTURE_SUCCESS);
+        } catch (Exception e) {
+            return Result.fail(MessageConstant.UPLOAD_FAILED);
+        }
     }
 }

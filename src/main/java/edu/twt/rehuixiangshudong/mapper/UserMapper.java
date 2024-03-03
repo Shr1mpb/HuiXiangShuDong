@@ -88,4 +88,12 @@ public interface UserMapper {
     @Select("select uid,username,nickname,gender,birth_date,journal_count,journal_group_count,location,background_image,user_profile_picture" +
             " from users where uid = #{uid}")
     UserInfoVO getUserInfo(Integer uid);
+
+    /**
+     * 上传并更改用户头像
+     * @param filePath 用户头像地址
+     * @param uid 用户uid
+     */
+    @Update("update users set user_profile_picture = #{filePath} where uid = #{uid}")
+    void uploadUserProfilePicture(String filePath, Integer uid);
 }

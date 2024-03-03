@@ -139,5 +139,8 @@ public class MessageConstant {
     public static final String GET_JOURNALGROUP_ERROR = "要查找的日记串不存在！！";
     public static final String MODIFY_JOURNAL_ERROR = "要修改的日记不存在！";
     public static final String UPLOAD_FAILED = "文件上传失败！";
+    public static final String UPLOAD_FILE_UNMATCHED = "文件类型错误！请上传正确的文件！";
+    public static final String CHANGE_PROFILE_PICTURE_SUCCESS = "更改用户头像成功！";
+    public static final String FILE_TOO_BIG = "上传的文件过大！请上传3M之内的文件！";
 }
 

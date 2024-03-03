@@ -47,4 +47,10 @@ public interface UserService {
      * @return 返回对象结果
      */
     UserInfoVO getUserInfo(Integer uid);
+
+    /**
+     * 上传并更改用户头像
+     * @param filePath 上传成功后文件路径
+     */
+    void uploadUserProfilePicture(String filePath,Integer uid);
 }

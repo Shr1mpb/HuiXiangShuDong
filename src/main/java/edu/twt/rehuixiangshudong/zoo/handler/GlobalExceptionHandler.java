@@ -18,6 +18,11 @@ public class GlobalExceptionHandler {
     public Result<Object> exceptionHandler(Exception ex) {
         log.error("异常为：{}",ex.getClass());
         log.error("异常信息为：{}",ex.getMessage());
+        //上传文件过大提示
+        if (ex.getMessage().contains("size exceeded")) {
+            return Result.fail(MessageConstant.FILE_TOO_BIG);
+        }
+        //其他提示
         if(ex.getMessage().length() > 20){
             return Result.fail(MessageConstant.NOT_KNOWN_ERROR);
         }
