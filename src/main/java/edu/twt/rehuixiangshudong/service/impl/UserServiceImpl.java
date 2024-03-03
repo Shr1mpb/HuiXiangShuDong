@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 获取用户信息
      * @param uid 从token中获取的uid
-     * @return
+     * @return 返回用户信息
      */
     @Override
     public UserInfoVO getUserInfo(Integer uid) {
