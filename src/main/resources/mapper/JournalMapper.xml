@@ -14,4 +14,15 @@
         </trim>
         where user_id_at = #{userIdAt} and is_deleted = 0
     </update>
+    <select id="getJournalsByUid" resultType="edu.twt.rehuixiangshudong.zoo.vo.JournalVO">
+        select journal_id,journal_title,created_at,modified_at,location,shared_count,
+               journal_group_id_at,journal_text,top_journal from journals
+        <where>
+            user_id_at = #{userIdAt} and is_deleted = 0
+            <if test="journalTitle != null and journalTitle != ''">
+                and journal_title like concat('%',#{journalTitle},'%')
+            </if>
+        </where>
+        ORDER BY top_journal DESC , created_at DESC
+    </select>
 </mapper>

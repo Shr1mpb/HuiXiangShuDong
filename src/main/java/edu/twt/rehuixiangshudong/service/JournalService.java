@@ -1,6 +1,8 @@
 package edu.twt.rehuixiangshudong.service;
 
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
+import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 
 public interface JournalService {
@@ -28,4 +30,11 @@ public interface JournalService {
      * @param journalDTO 传输日记的相关信息
      */
     void createJournalAtJournalGroup(JournalDTO journalDTO);
+
+    /**
+     * 分页查询日记信息
+     * @param journalPageQueryDTO 查询名称 页码 每页记录数
+     * @return 返回PageResult结果
+     */
+    PageResult getJournalsByUid(JournalPageQueryDTO journalPageQueryDTO);
 }

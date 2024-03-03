@@ -1,18 +1,24 @@
 package edu.twt.rehuixiangshudong.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
 import edu.twt.rehuixiangshudong.mapper.JournalMapper;
 import edu.twt.rehuixiangshudong.service.JournalService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.exception.CreateJournalFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.GetJournalsFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.ModifyJournalFailedException;
 import edu.twt.rehuixiangshudong.zoo.exception.SetTopJournalFailedException;
+import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class JournalServiceImpl implements JournalService {
@@ -112,5 +118,26 @@ public class JournalServiceImpl implements JournalService {
         } catch (Exception e) {
             throw new GetJournalsFailedException(MessageConstant.GET_JOURNALS_FAILED);
         }
+    }
+
+    /**
+     * 分页查询日记信息
+     * @param journalPageQueryDTO 查询名称 页码 每页记录数
+     * @return PageResult结果
+     */
+    @Override
+    public PageResult getJournalsByUid(JournalPageQueryDTO journalPageQueryDTO) {
+        //select * from employ limit 0,10
+        //引入PageHelper依赖 开始分页查询
+
+        PageHelper.startPage(journalPageQueryDTO.getPage(), journalPageQueryDTO.getPageSize());
+        Page<JournalVO> page = journalMapper.getJournalsByUid(journalPageQueryDTO);
+
+        List<JournalVO> result = page.getResult();
+        long total  = page.getTotal();
+
+        return new PageResult(total,result);
+
+
     }
 }

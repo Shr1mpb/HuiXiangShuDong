@@ -31,3 +31,10 @@ session:
     token-name: token
     # 设置jwt过期时间 此处设置了 30 天
     ttl: 2592000000
+
+#分页pageHelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

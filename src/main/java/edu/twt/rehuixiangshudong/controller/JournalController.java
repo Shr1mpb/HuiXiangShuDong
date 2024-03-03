@@ -3,6 +3,8 @@ package edu.twt.rehuixiangshudong.controller;
 import edu.twt.rehuixiangshudong.service.JournalService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
+import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
@@ -43,6 +45,9 @@ public class JournalController {
      */
     @PutMapping("/modifyJournal")
     public Result<Object> modifyJournal(@RequestBody JournalDTO journalDTO){
+        if (journalDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
         //获取token中的uid
         Integer uid = ThreadLocalUtil.getCurrentUid();
 
@@ -83,8 +88,16 @@ public class JournalController {
 
     }
 
+    /**
+     * 在日记串中创建日记
+     * @param journalDTO 传输日记相关信息
+     * @return 返回信息结果
+     */
     @PostMapping("/createJournalAtJournalGroup")
     public Result<Object> createJournalAtJournalGroup(@RequestBody JournalDTO journalDTO) {
+        if (journalDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
         //获取token中的uid,并将其设置到journalDTO中
         Integer uid = ThreadLocalUtil.getCurrentUid();
         journalDTO.setUserIdAt(uid);
@@ -96,4 +109,23 @@ public class JournalController {
         return Result.success(MessageConstant.CREATE_JOURNAL_SUCCESS);
     }
 
+    /**
+     * 分页查询日记数据 参数形式Query
+     * @param journalPageQueryDTO 传输查询用的 日记标题、页码、每页记录数
+     * @return 返回查询结果
+     */
+    @GetMapping("/getJournalsByUid")
+    public Result<PageResult> getJournalsByUid(JournalPageQueryDTO journalPageQueryDTO) {
+        if (journalPageQueryDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        journalPageQueryDTO.setUserIdAt(uid);
+        log.info("uid为 {} 的用户分页查询日记 {}", uid, journalPageQueryDTO);
+
+        PageResult pageResult = journalService.getJournalsByUid(journalPageQueryDTO);
+
+        return Result.success(pageResult);
+
+    }
 }
