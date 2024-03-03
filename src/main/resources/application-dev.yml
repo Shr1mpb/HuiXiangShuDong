@@ -6,3 +6,10 @@ huixiangshudong:
     database: rehuixiangshudong
     username: root
     password: 1234
+
+#阿里云OSS配置
+alioss:
+  access-key-id: LTAI5tDStHW7vHnLbAkoNYqD
+  access-key-secret: AFXJ6yX3luvN4ulvVu8meDWZDTj2D0
+  endpoint: oss-cn-beijing.aliyuncs.com
+  bucket-name: huixiangshudong

@@ -1,6 +1,6 @@
 server:
   #服务器端口
-  port: 8080
+  port: 25565
 
 spring:
   profiles:
@@ -38,3 +38,10 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
+
+#阿里云OSS配置
+alioss:
+  access-key-id: ${AliOss.access-key-id}
+  access-key-secret: ${AliOss.accessKeySecret}
+  endpoint: ${AliOss.endpoint}
+  bucket-name: ${AliOss.bucketName}

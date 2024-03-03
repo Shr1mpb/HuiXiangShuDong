@@ -138,5 +138,6 @@ public class MessageConstant {
     public static final String COMMON_ERROR = "操作失败！请检查是否传递了参数！";
     public static final String GET_JOURNALGROUP_ERROR = "要查找的日记串不存在！！";
     public static final String MODIFY_JOURNAL_ERROR = "要修改的日记不存在！";
+    public static final String UPLOAD_FAILED = "文件上传失败！";
 }
 
