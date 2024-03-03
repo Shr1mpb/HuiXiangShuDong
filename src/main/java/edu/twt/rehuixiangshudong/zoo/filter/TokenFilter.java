@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import com.alibaba.fastjson2.JSONObject;
 import java.io.IOException;
@@ -24,7 +23,6 @@ import java.util.Map;
 
 @WebFilter(urlPatterns = "/*")
 @Slf4j
-@Component
 public class TokenFilter implements jakarta.servlet.Filter {
     @Autowired
     private JwtProperties jwtProperties;

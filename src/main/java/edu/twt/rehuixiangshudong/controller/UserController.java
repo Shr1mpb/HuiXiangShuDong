@@ -185,4 +185,9 @@ public class UserController {
         return Result.success(userInfoVO);
 
     }
+
+    @GetMapping("/laozhanyou")
+    public Result<Object> laozhanyou() {
+        return Result.success("我操你妈");
+    }
 }
