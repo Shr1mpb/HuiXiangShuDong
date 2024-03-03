@@ -8,16 +8,21 @@ import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserRegisterAndLoginDTO;
 import edu.twt.rehuixiangshudong.zoo.entity.User;
 import edu.twt.rehuixiangshudong.zoo.exception.*;
+import edu.twt.rehuixiangshudong.zoo.util.AliOssUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserInfoVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private AliOssUtil aliOssUtil;
 
     /**
      * 注册服务
@@ -162,23 +167,49 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 上传并更改用户头像
+     * 上传并更改用户头像 上传成功后删除原有文件
      * @param filePath 上传成功后文件路径
      */
     @Override
     public void uploadUserProfilePicture(String filePath,Integer uid) {
-
+        //先获取原有图片url 再获取原有图片名字
+        UserInfoVO userInfoVO = userMapper.getUserInfo(uid);
+        String userProfilePicture = userInfoVO.getUserProfilePicture();
+        String oldName = userProfilePicture.substring(userProfilePicture.lastIndexOf("/") + 1);
+        //数据库修改图片url
         userMapper.uploadUserProfilePicture(filePath, uid);
+        //尝试删除旧url
+        try {
+            aliOssUtil.delete(oldName);
+            log.info("删除旧OSS文件成功！所属用户{}",uid);
+        } catch (Exception e) {
+            log.error("删除OSS旧文件失败！{}",userProfilePicture);
+        }
+
 
     }
 
     /**
-     * 上传并更改背景图片
+     * 上传并更改背景图片 上传成功后删除原有文件
      * @param filePath 上传成功后文件路径
      * @param uid 用户的uid
      */
     @Override
     public void uploadUserBackgroundImage(String filePath, Integer uid) {
+        //先获取原有图片url 再获取原有图片名字
+        UserInfoVO userInfoVO = userMapper.getUserInfo(uid);
+        String backgroundImage = userInfoVO.getBackgroundImage();
+        String oldName = backgroundImage.substring(backgroundImage.lastIndexOf("/") + 1);
+        //数据库修改图片url
         userMapper.uploadUserBackgroundImage(filePath, uid);
+        //尝试删除旧url
+        try {
+            aliOssUtil.delete(oldName);
+            log.info("删除旧OSS文件成功！所属用户{}",uid);
+        } catch (Exception e) {
+            log.error("删除OSS旧文件失败！{}",backgroundImage);
+        }
+
+
     }
 }
