@@ -1,6 +1,8 @@
 package edu.twt.rehuixiangshudong.mapper;
 
+import com.github.pagehelper.Page;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.apache.ibatis.annotations.Insert;
@@ -76,4 +78,11 @@ public interface JournalGroupMapper {
      */
     @Update("UPDATE journals set journal_group_id_at = 0 where user_id_at = #{uid} and journal_id = #{journalId}")
     void deleteJournalFromJournalGroup(int uid, int journalId);
+
+    /**
+     * 分页查询日记串
+     * @param journalGroupPageQueryDTO 页码、单页包含数、标题
+     * @return PageHelper要求的Page对象
+     */
+    Page<JournalGroupVO> getJournalGroups(JournalGroupPageQueryDTO journalGroupPageQueryDTO);
 }

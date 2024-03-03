@@ -1,6 +1,8 @@
 package edu.twt.rehuixiangshudong.service;
 
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupPageQueryDTO;
+import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 
@@ -59,4 +61,11 @@ public interface JournalGroupService {
      * @param journalId 日记id
      */
     void deleteJournalFromJournalGroup(int uid, int journalGroupId, int journalId);
+
+    /**
+     * 分页查询日记串
+     * @param journalGroupPageQueryDTO 页码、单页包含数、日记串名字
+     * @return PageResult结果
+     */
+    PageResult getJournalGroups(JournalGroupPageQueryDTO journalGroupPageQueryDTO);
 }

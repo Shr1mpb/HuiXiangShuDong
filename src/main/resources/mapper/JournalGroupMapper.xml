@@ -2,4 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.twt.rehuixiangshudong.mapper.JournalGroupMapper">
+    <select id="getJournalGroups" resultType="edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO">
+        select journal_group_id,journal_group_name,created_at,modified_at,journal_count from journal_groups
+        <where>
+            user_id_at = #{userIdAt} and is_deleted = 0
+        <if test="journalGroupName != null and journalGroupName != ''">
+            and journal_group_name like concat('%',#{journalGroupName},'%')
+        </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
 </mapper>

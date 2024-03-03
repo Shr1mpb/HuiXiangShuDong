@@ -1,11 +1,15 @@
 package edu.twt.rehuixiangshudong.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
 import edu.twt.rehuixiangshudong.mapper.JournalMapper;
 import edu.twt.rehuixiangshudong.service.JournalGroupService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.exception.*;
+import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,5 +177,21 @@ public class JournalGroupServiceImpl implements JournalGroupService {
         } catch (Exception e) {
             throw new DeleteJournalFromJGFailedException(MessageConstant.DELETE_JOURNAL_FROM_ERROR);
         }
+    }
+
+    /**
+     * 分页查询日记串
+     * @param journalGroupPageQueryDTO 页码、单页包含数、日记串名字
+     * @return PageResult结果
+     */
+    @Override
+    public PageResult getJournalGroups(JournalGroupPageQueryDTO journalGroupPageQueryDTO) {
+        //使用pageHelper分页查询
+        PageHelper.startPage(journalGroupPageQueryDTO.getPage(), journalGroupPageQueryDTO.getPageSize());
+        Page<JournalGroupVO> page = journalGroupMapper.getJournalGroups(journalGroupPageQueryDTO);
+
+        long total = page.getTotal();
+        List<JournalGroupVO> journalGroupVOS = page.getResult();
+        return new PageResult(total, journalGroupVOS);
     }
 }

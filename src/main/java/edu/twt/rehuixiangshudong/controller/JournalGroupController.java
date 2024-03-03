@@ -3,18 +3,16 @@ package edu.twt.rehuixiangshudong.controller;
 import edu.twt.rehuixiangshudong.service.JournalGroupService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupPageQueryDTO;
+import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping
@@ -155,8 +153,8 @@ public class JournalGroupController {
 
     /**
      * 把日记从日记串中移除
-     * @param journalGroupDTO
-     * @return
+     * @param journalGroupDTO 要移除的日记串
+     * @return 返回结果
      */
     @PutMapping("/deleteJournalFromJournalGroup")
     public Result<Object> deleteJournalFromJournalGroup(@RequestBody JournalGroupDTO journalGroupDTO) {
@@ -171,5 +169,23 @@ public class JournalGroupController {
         journalGroupService.deleteJournalFromJournalGroup(uid, journalGroupId, journalId);
 
         return Result.success(MessageConstant.DELETE_JOURNAL_FROM_JG_SUCCESS);
+    }
+
+    /**
+     * 分页查询日记串
+     */
+    @GetMapping("/getJournalGroups")
+    public Result<PageResult> getJournalGroups(JournalGroupPageQueryDTO journalGroupPageQueryDTO) {
+        if (journalGroupPageQueryDTO == null) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        //获取uid并设置
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        journalGroupPageQueryDTO.setUserIdAt(uid);
+        log.info("uid为 {} 的用户分页查询日记串 {}", uid, journalGroupPageQueryDTO);
+
+        PageResult pageResult = journalGroupService.getJournalGroups(journalGroupPageQueryDTO);
+
+        return Result.success(pageResult);
     }
 }
