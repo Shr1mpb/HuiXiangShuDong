@@ -171,4 +171,14 @@ public class UserServiceImpl implements UserService {
         userMapper.uploadUserProfilePicture(filePath, uid);
 
     }
+
+    /**
+     * 上传并更改背景图片
+     * @param filePath 上传成功后文件路径
+     * @param uid 用户的uid
+     */
+    @Override
+    public void uploadUserBackgroundImage(String filePath, Integer uid) {
+        userMapper.uploadUserBackgroundImage(filePath, uid);
+    }
 }

@@ -222,6 +222,41 @@ public class UserController {
             userService.uploadUserProfilePicture(filePath,uid);
             return Result.success(MessageConstant.CHANGE_PROFILE_PICTURE_SUCCESS);
         } catch (Exception e) {
+            //上传失败
+            return Result.fail(MessageConstant.UPLOAD_FAILED);
+        }
+    }
+
+    /**
+     * 上传并修改用户背景图片
+     * @param file 上传的文件
+     * @return 返回文字结果
+     */
+    @PostMapping("/uploadUserBackgroundImage")
+    public Result<Object> uploadUserBackgroundImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+
+        log.info("uid为 {} 的用户 上传并修改背景图片", uid);
+        //获取原始文件名 并获取文件拓展名 并且用uuid拼接
+        String originalFilename = file.getOriginalFilename();
+        String extension = Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf("."));
+        String objectName = UUID.randomUUID() + extension;
+        //若扩展名不是 jpg 或 png
+        if (!(extension.equals(".jpg") || extension.equals(".png"))) {
+            return Result.fail(MessageConstant.UPLOAD_FILE_UNMATCHED);
+        }
+        //上传文件
+        try {
+            String filePath = aliOssUtil.upload(file.getBytes(), objectName);
+
+            //上传成功
+            userService.uploadUserBackgroundImage(filePath,uid);
+            return Result.success(MessageConstant.CHANGE_BACKGROUND_SUCCESS);
+        } catch (Exception e) {
+            //上传失败
             return Result.fail(MessageConstant.UPLOAD_FAILED);
         }
     }

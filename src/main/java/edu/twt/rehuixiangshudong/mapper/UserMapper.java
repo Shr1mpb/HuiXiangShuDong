@@ -96,4 +96,12 @@ public interface UserMapper {
      */
     @Update("update users set user_profile_picture = #{filePath} where uid = #{uid}")
     void uploadUserProfilePicture(String filePath, Integer uid);
+
+    /**
+     *
+     * @param filePath 文件路径
+     * @param uid 用户uid
+     */
+    @Update("update users set background_image = #{filePath} where uid = #{uid}")
+    void uploadUserBackgroundImage(String filePath, Integer uid);
 }

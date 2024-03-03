@@ -53,4 +53,11 @@ public interface UserService {
      * @param filePath 上传成功后文件路径
      */
     void uploadUserProfilePicture(String filePath,Integer uid);
+
+    /**
+     * 上传并更改用户背景图片
+     * @param filePath 上传成功后文件路径
+     * @param uid 用户的uid
+     */
+    void uploadUserBackgroundImage(String filePath, Integer uid);
 }
