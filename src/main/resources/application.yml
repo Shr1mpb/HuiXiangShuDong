@@ -10,15 +10,21 @@ spring:
     #开启循环依赖
     allow-circular-references: true
   datasource:
-    driver-class-name: ${huixiangshudong.datasource.driver-class-name}
-    url: jdbc:mysql://${huixiangshudong.datasource.host}:${huixiangshudong.datasource.port}/${huixiangshudong.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-    username: ${huixiangshudong.datasource.username}
-    password: ${huixiangshudong.datasource.password}
+    driver-class-name: ${datasource.driver-class-name}
+    url: jdbc:mysql://${datasource.host}:${datasource.port}/${datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${datasource.username}
+    password: ${datasource.password}
   #限制上传文件的最大大小和单次连接的最大流量
   servlet:
     multipart:
       max-file-size: 3MB
       max-request-size: 5MB
+  data:
+    redis:
+      host: ${redis.host}
+      port: ${redis.port}
+      password: ${redis.password}
+      database: ${redis.database}
 
 
 mybatis:
