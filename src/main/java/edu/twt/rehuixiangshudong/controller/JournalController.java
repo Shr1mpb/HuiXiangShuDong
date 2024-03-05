@@ -59,7 +59,12 @@ public class JournalController {
             return Result.fail(MessageConstant.MODIFY_JOURNAL_FAILED);
         }
         journalService.modifyJournal(journalDTO);
-
+        if (journalDTO.getIsDeleted() == 1) {
+            return Result.success(MessageConstant.DELETE_JOURNAL_SUCCESS);
+        }
+        if (journalDTO.getTopJournal() == 1) {
+            return Result.success(MessageConstant.SET_TOPJOURNAL_SUCCESS);
+        }
         return Result.success(MessageConstant.MODIFY_JOURNAL_SUCCESS);
 
     }
