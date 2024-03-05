@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
 import edu.twt.rehuixiangshudong.mapper.JournalMapper;
+import edu.twt.rehuixiangshudong.mapper.UserMapper;
 import edu.twt.rehuixiangshudong.service.JournalGroupService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
@@ -23,6 +24,8 @@ public class JournalGroupServiceImpl implements JournalGroupService {
     private JournalGroupMapper journalGroupMapper;
     @Autowired
     private JournalMapper journalMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 创建日记串
@@ -35,6 +38,8 @@ public class JournalGroupServiceImpl implements JournalGroupService {
             if (journalGroupDTO.getJournalGroupName().isEmpty()) {
                 journalGroupDTO.setJournalGroupName(MessageConstant.EMPTY_DATA);
             }
+            //创建日记串 用户日记串数量 +1
+            userMapper.updateJournalGroupCount(1,journalGroupDTO.getUserIdAt());
             journalGroupMapper.createJournalGroup(journalGroupDTO);
         } catch (Exception e) {
             throw new CreateJournalGroupFailedException(MessageConstant.CREATE_JOURNAL_GROUP_FAILED);
@@ -118,6 +123,8 @@ public class JournalGroupServiceImpl implements JournalGroupService {
         }
         //进行删除
         try {
+            //删除日记串 用户日记串数量-1
+            userMapper.updateJournalGroupCount(-1,uid);
             journalGroupMapper.deleteJournalGroup(uid, journalGroupId);
         } catch (Exception e) {
             throw new DeleteJournalGroupFailedException(MessageConstant.DELETE_JOURNAL_GROUP_ERROR);
@@ -145,7 +152,8 @@ public class JournalGroupServiceImpl implements JournalGroupService {
             throw new AddJournalToJournalGroupFailedException(MessageConstant.ADD_JOURNAL_FAILED);
         }
 
-
+        //日记加入日记串 更新日记串包含日记数量+1
+        journalGroupMapper.updateJournalCountOfJournalGroup(1, uid,journalGroupId);
         //属于自己且不包含在该日记串中，进行更改
         journalGroupMapper.addJournalToJournalGroup(uid,journalId,journalGroupId);
 
@@ -173,6 +181,8 @@ public class JournalGroupServiceImpl implements JournalGroupService {
         //删除
 
         try {
+            //日记从日记串移除 日记串包含的日记数量-1
+            journalGroupMapper.updateJournalCountOfJournalGroup(-1, uid,journalGroupId);
             journalGroupMapper.deleteJournalFromJournalGroup(uid, journalId);
         } catch (Exception e) {
             throw new DeleteJournalFromJGFailedException(MessageConstant.DELETE_JOURNAL_FROM_ERROR);

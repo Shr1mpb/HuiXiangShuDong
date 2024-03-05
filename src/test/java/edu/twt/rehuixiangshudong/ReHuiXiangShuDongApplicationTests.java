@@ -1,6 +1,7 @@
 package edu.twt.rehuixiangshudong;
 
 import com.alibaba.fastjson2.JSONObject;
+import edu.twt.rehuixiangshudong.mapper.UserMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -9,12 +10,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import static org.apache.http.impl.client.HttpClients.createDefault;
 
 @SpringBootTest
 class ReHuiXiangShuDongApplicationTests {
+    @Autowired
+    private UserMapper userMapper;
     @Test
     public void httpGetClientTest() throws IOException {
         //1.创建HttpClient对象

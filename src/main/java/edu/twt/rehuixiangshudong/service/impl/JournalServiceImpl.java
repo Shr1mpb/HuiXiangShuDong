@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import edu.twt.rehuixiangshudong.mapper.JournalGroupMapper;
 import edu.twt.rehuixiangshudong.mapper.JournalMapper;
+import edu.twt.rehuixiangshudong.mapper.UserMapper;
 import edu.twt.rehuixiangshudong.service.JournalService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
@@ -17,7 +18,6 @@ import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -26,6 +26,8 @@ public class JournalServiceImpl implements JournalService {
     private JournalMapper journalMapper;
     @Autowired
     private JournalGroupMapper journalGroupMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 创建日记功能
@@ -40,6 +42,8 @@ public class JournalServiceImpl implements JournalService {
         try {
                 journalDTO.setJournalGroupIdAt(0);
             journalMapper.createJournal(journalDTO);
+            //创建日记 用户日记+1
+            userMapper.updateJournalCount(1,journalDTO.getUserIdAt());
         } catch (Exception e) {
             throw new CreateJournalFailedException(MessageConstant.CREATE_JOURNAL_FAILED);
         }
@@ -58,15 +62,19 @@ public class JournalServiceImpl implements JournalService {
             throw new CreateJournalFailedException(MessageConstant.JOURNAL_GROUP_MATCH_FAILED);
         }
 
-        try {
+        try {//在日记串中创建日记
             journalMapper.createJournal(journalDTO);
+            //创建日记 用户日记数量 +1
+            userMapper.updateJournalCount(1,journalDTO.getUserIdAt());
+            //日记串包含的日记数量 +1
+            journalGroupMapper.updateJournalCountOfJournalGroup(1,journalDTO.getUserIdAt(),journalDTO.getJournalGroupIdAt());
         } catch (Exception e) {
             throw new CreateJournalFailedException(MessageConstant.CREATE_JOURNAL_FAILED);
         }
     }
 
     /**
-     * 修改日记信息
+     * 修改日记信息（包含删除与置顶）
      * @param journalDTO 传输日记的信息
      */
     @Override
@@ -97,7 +105,10 @@ public class JournalServiceImpl implements JournalService {
                 throw new SetTopJournalFailedException(MessageConstant.SET_TOPJOURNAL_FAILED);
             }
         }
-
+        //如果删除日记 先让用户日记数-1
+        if (journalDTO.getIsDeleted() == 1) {
+            userMapper.updateJournalCount(-1,journalDTO.getUserIdAt());
+        }
         try {
             journalMapper.modifyJournal(journalDTO);
         } catch (Exception e) {

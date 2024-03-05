@@ -36,6 +36,10 @@ public class UserInfoVO implements Serializable {
     private Integer journalCount;
     @ApiModelProperty("日记串的数量")
     private Integer journalGroupCount;
+    @ApiModelProperty("用户记录天数")
+    private Integer writeDays;
+    @ApiModelProperty("用户日记总字数")
+    private Integer textCount;
     @ApiModelProperty("用户定位")
     private String location;
     @ApiModelProperty("用户背景图片URL")

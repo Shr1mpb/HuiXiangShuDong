@@ -85,4 +85,10 @@ public interface JournalGroupMapper {
      * @return PageHelper要求的Page对象
      */
     Page<JournalGroupVO> getJournalGroups(JournalGroupPageQueryDTO journalGroupPageQueryDTO);
+
+    /**
+     * 更新日记串包含的日记数量
+     */
+    @Update("update journal_groups set journal_count = journal_count + #{count} where user_id_at = #{uid} and journal_group_id = #{journalGroupIdAt}")
+    void updateJournalCountOfJournalGroup(int count,Integer uid,Integer journalGroupIdAt);
 }

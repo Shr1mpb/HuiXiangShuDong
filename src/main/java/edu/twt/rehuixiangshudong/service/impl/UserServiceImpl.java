@@ -151,20 +151,25 @@ public class UserServiceImpl implements UserService {
 
         try {
             UserInfoVO userInfoVO = userMapper.getUserInfo(uid);
-            if (userInfoVO != null) {//非空判断 防止空指针异常
-                if (userInfoVO.getGender().equals("1")) {
-                    userInfoVO.setGender("男");
-                } else if (userInfoVO.getGender().equals("2")) {
-                    userInfoVO.setGender("女");
-                }else {
-                    userInfoVO.setGender("未知");
-                }
+            if (userInfoVO == null) {//非空判断 防止空指针异常
+                throw new GetUserInfoFailedException(MessageConstant.GET_USERINFO_FAILED);
             }
+            //设置性别
+            if (userInfoVO.getGender().equals("1")) {
+                userInfoVO.setGender("男");
+            } else if (userInfoVO.getGender().equals("2")) {
+                userInfoVO.setGender("女");
+            } else {
+                userInfoVO.setGender("未知");
+            }
+            //设置记录天数
+
             return userInfoVO;
         } catch (Exception e) {
             throw new GetUserInfoFailedException(MessageConstant.GET_USERINFO_FAILED);
         }
     }
+
 
     /**
      * 上传并更改用户头像 上传成功后删除原有文件
