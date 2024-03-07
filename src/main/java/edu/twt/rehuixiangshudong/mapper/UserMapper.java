@@ -19,7 +19,7 @@ public interface UserMapper {
      * @param uid  uid
      * @param time 更新后时间
      */
-    @Update("update USERS set last_login_time = #{time} where uid = #{uid}")
+    @Update("update users set last_login_time = #{time} where uid = #{uid}")
     void updateLastLoginTimeByUid(int uid, Timestamp time);
 
     /**
@@ -28,7 +28,7 @@ public interface UserMapper {
      * @param username 用户名
      * @param time     更新后时间
      */
-    @Update("update USERS set last_login_time = #{time} where username = #{username}")
+    @Update("update users set last_login_time = #{time} where username = #{username}")
     void updateLastLoginTimeByUsername(String username, Timestamp time);
 
     /**
@@ -37,7 +37,7 @@ public interface UserMapper {
      * @param username 用户名
      * @return 最后登录时间Timestamp
      */
-    @Select("select last_login_time from USERS where username = #{username}")
+    @Select("select last_login_time from users where username = #{username}")
     Timestamp getLastLoginTimeByUsername(String username);
 
     /**
@@ -48,7 +48,7 @@ public interface UserMapper {
      */
     @Select("select uid,username,password,nickname,gender,birth_date,journal_count," +
             "journal_group_count,location,background_image,search_history,user_profile_picture" +
-            " from USERS where username = #{username}")
+            " from users where username = #{username}")
     User getByUsername(String username);
 
     /**
@@ -57,7 +57,7 @@ public interface UserMapper {
      * @param username 用户名
      * @param password 密码
      */
-    @Insert("insert into USERS (username,password) values (#{username},#{password})")
+    @Insert("insert into users (username,password) values (#{username},#{password})")
     void register(String username, String password);
 
     /**
@@ -68,7 +68,7 @@ public interface UserMapper {
      */
     @Select("select uid,username,password,nickname,gender,birth_date,journal_count," +
             "journal_group_count,location,background_image,search_history,user_profile_picture" +
-            " from USERS where uid = #{uid}")
+            " from users where uid = #{uid}")
     User getByUid(Integer uid);
 
     /**
@@ -78,7 +78,7 @@ public interface UserMapper {
      * @param oldPassword 旧密码
      * @param newPassword 新密码
      */
-    @Update("update USERS set password = #{newPassword} WHERE uid = #{uid} and password = #{oldPassword}")
+    @Update("update users set password = #{newPassword} WHERE uid = #{uid} and password = #{oldPassword}")
     void changePassword(Integer uid, String oldPassword, String newPassword);
 
     /**
