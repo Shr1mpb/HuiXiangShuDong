@@ -12,12 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @RestController
 @RequestMapping
 @Slf4j
 public class JournalController {
     @Autowired
     private JournalService journalService;
+    private static final String DATE_PATTERN = "^\\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])$";
     /**
      * 创建日记
      * @param journalDTO 传输日记信息
@@ -121,8 +125,12 @@ public class JournalController {
      */
     @GetMapping("/getJournalsByUid")
     public Result<PageResult> getJournalsByUid(JournalPageQueryDTO journalPageQueryDTO) {
-        if (journalPageQueryDTO == null) {
-            return Result.fail(MessageConstant.COMMON_ERROR);
+
+        Pattern pattern = Pattern.compile(DATE_PATTERN);
+        Matcher matcher = pattern.matcher(journalPageQueryDTO.getDate());
+        if (journalPageQueryDTO.getDate().isEmpty()){//日期栏没填，不判断格式直接查询全部
+        }else if (!matcher.matches()) {//日期格式不对 直接返回错误信息
+            return Result.fail(MessageConstant.ERROR_DATE_FORMAT);
         }
         Integer uid = ThreadLocalUtil.getCurrentUid();
         journalPageQueryDTO.setUserIdAt(uid);

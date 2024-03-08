@@ -142,6 +142,18 @@ public class JournalServiceImpl implements JournalService {
         //引入PageHelper依赖 开始分页查询
 
         PageHelper.startPage(journalPageQueryDTO.getPage(), journalPageQueryDTO.getPageSize());
+    //根据range提供查询的信息
+        String date = journalPageQueryDTO.getDate();
+        if (journalPageQueryDTO.getRange() == 1) {//按月份查询，将date直接设置为中间的月，并且设置年份为前面的年
+            //先给year赋值,后给date赋值
+            int startIndex = date.indexOf("-"); // 找到第一个'-'后面的位置 包前不包后
+            int endIndex = date.indexOf("-", startIndex + 1); // 从startIndex开始找到第二个'-'的位置
+            journalPageQueryDTO.setYear(date.substring(0, startIndex));
+            journalPageQueryDTO.setDate(date.substring(startIndex + 1, endIndex));
+        }else if (journalPageQueryDTO.getRange() == 2) {//按年查询，将date直接设置为年份
+            int startIndex = date.indexOf("-"); // 找到第一个'-'后面的位置 包前不包后
+            journalPageQueryDTO.setYear(date.substring(0,startIndex));
+        }
         Page<JournalVO> page = journalMapper.getJournalsByUid(journalPageQueryDTO);
 
         List<JournalVO> result = page.getResult();
