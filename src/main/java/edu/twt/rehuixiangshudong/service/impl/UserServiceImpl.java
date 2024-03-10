@@ -180,13 +180,18 @@ public class UserServiceImpl implements UserService {
         //先获取原有图片url 再获取原有图片名字
         UserInfoVO userInfoVO = userMapper.getUserInfo(uid);
         String userProfilePicture = userInfoVO.getUserProfilePicture();
-        String oldName = userProfilePicture.substring(userProfilePicture.lastIndexOf("/") + 1);
+        String oldName = null;
+        if (userProfilePicture != null) {//用户原本有图片
+            oldName = userProfilePicture.substring(userProfilePicture.lastIndexOf("/") + 1);
+        }
         //数据库修改图片url
         userMapper.uploadUserProfilePicture(filePath, uid);
         //尝试删除旧url
         try {
-            aliOssUtil.delete(oldName);
-            log.info("删除旧OSS文件成功！所属用户{}",uid);
+            if (oldName != null) {
+                aliOssUtil.delete(oldName);
+                log.info("删除旧OSS文件成功！所属用户{}",uid);
+            }
         } catch (Exception e) {
             log.error("删除OSS旧文件失败！{}",userProfilePicture);
         }
@@ -204,13 +209,18 @@ public class UserServiceImpl implements UserService {
         //先获取原有图片url 再获取原有图片名字
         UserInfoVO userInfoVO = userMapper.getUserInfo(uid);
         String backgroundImage = userInfoVO.getBackgroundImage();
-        String oldName = backgroundImage.substring(backgroundImage.lastIndexOf("/") + 1);
+        String oldName = null;
+        if (backgroundImage != null) {//如果原本有背景图片 获得oldName
+            oldName = backgroundImage.substring(backgroundImage.lastIndexOf("/") + 1);
+        }
         //数据库修改图片url
         userMapper.uploadUserBackgroundImage(filePath, uid);
         //尝试删除旧url
         try {
-            aliOssUtil.delete(oldName);
-            log.info("删除旧OSS文件成功！所属用户{}",uid);
+            if (oldName != null) {
+                aliOssUtil.delete(oldName);
+                log.info("删除旧OSS文件成功！所属用户{}",uid);
+            }
         } catch (Exception e) {
             log.error("删除OSS旧文件失败！{}",backgroundImage);
         }
