@@ -60,3 +60,14 @@ create table journals
         primary key (journal_id)
 )
     comment '日记表' auto_increment = 10000;
+-- 日记图片表
+DROP TABLE IF EXISTS `journal_pictures`;
+create table journal_pictures
+(
+    picture_id         int UNSIGNED                           auto_increment comment '图片id',
+    journal_id_at      int UNSIGNED                 NOT NULL                 comment '图片所属的日记',
+    picture_url        varchar(255)                 NOT NULL                 comment '图片URL',
+    constraint picture_pk
+        primary key (picture_id)
+)
+    comment '日记图片表' auto_increment = 10000;

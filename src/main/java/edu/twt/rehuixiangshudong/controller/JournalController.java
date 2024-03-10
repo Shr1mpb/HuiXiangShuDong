@@ -5,13 +5,14 @@ import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.result.PageResult;
+import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -140,5 +141,28 @@ public class JournalController {
 
         return Result.success(pageResult);
 
+    }
+
+    /**
+     * 根据日记id获取日记图片
+     * @param journalId 日记id
+     * @return 返回格式
+     *             {
+     *                 pictureId:
+     *                 pictureUrl:
+     *             } ,
+     *             {
+     *                 pictureId:
+     *                 pictureUrl:
+     *             }
+     */
+    @GetMapping("/getJournalPictures")
+    public Result<List<PictureResult>> getJournalPictures(int journalId) {
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        log.info("uid为 {} 的用户查询 日记id为{} 的日记图片",uid,journalId);
+
+        List<PictureResult> pictures = journalService.getJournalPictures(uid,journalId);
+
+        return Result.success(pictures);
     }
 }

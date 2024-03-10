@@ -9,11 +9,9 @@ import edu.twt.rehuixiangshudong.service.JournalService;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
-import edu.twt.rehuixiangshudong.zoo.exception.CreateJournalFailedException;
-import edu.twt.rehuixiangshudong.zoo.exception.GetJournalsFailedException;
-import edu.twt.rehuixiangshudong.zoo.exception.ModifyJournalFailedException;
-import edu.twt.rehuixiangshudong.zoo.exception.SetTopJournalFailedException;
+import edu.twt.rehuixiangshudong.zoo.exception.*;
 import edu.twt.rehuixiangshudong.zoo.result.PageResult;
+import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,5 +160,22 @@ public class JournalServiceImpl implements JournalService {
         return new PageResult(total,result);
 
 
+    }
+
+    /**
+     * 获取日记的图片
+     * @param uid 用户uid
+     * @param journalId 要获取图片的日记id
+     * @return 返回集合
+     */
+    @Override
+    public List<PictureResult> getJournalPictures(Integer uid, int journalId) {
+        //判断日记是不是自己的 不是自己的返回错误信息
+        JournalVO journal = journalMapper.getJournalByJID2(uid, journalId);
+        if (journal == null) {
+            throw new GetPicturesFailedException(MessageConstant.NO_JOURNAL_FOUND);
+        }
+        //日记是自己的 获取日记的图片信息
+        return journalMapper.getJournalPictures(journalId);
     }
 }

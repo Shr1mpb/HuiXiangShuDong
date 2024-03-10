@@ -3,10 +3,13 @@ package edu.twt.rehuixiangshudong.mapper;
 import com.github.pagehelper.Page;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
+import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface JournalMapper {
@@ -53,4 +56,12 @@ public interface JournalMapper {
      * @return 返回Page类
      */
     Page<JournalVO> getJournalsByUid(JournalPageQueryDTO journalPageQueryDTO);
+
+    /**
+     * 查询日记图片
+     * @param journalId 日记id
+     * @return 返回日记图片结果的集合 包含了图片id和图片的url
+     */
+    @Select("select picture_id,picture_url from journal_pictures where journal_id_at = #{journalId}")
+    List<PictureResult> getJournalPictures(int journalId);
 }

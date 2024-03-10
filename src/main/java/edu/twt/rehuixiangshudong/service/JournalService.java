@@ -3,7 +3,10 @@ package edu.twt.rehuixiangshudong.service;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.result.PageResult;
+import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
+
+import java.util.List;
 
 public interface JournalService {
     /**
@@ -37,4 +40,12 @@ public interface JournalService {
      * @return 返回PageResult结果
      */
     PageResult getJournalsByUid(JournalPageQueryDTO journalPageQueryDTO);
+
+    /**
+     * 获取日记的图片
+     * @param uid 用户uid
+     * @param journalId 要获取图片的日记id
+     * @return 返回集合
+     */
+    List<PictureResult> getJournalPictures(Integer uid, int journalId);
 }
