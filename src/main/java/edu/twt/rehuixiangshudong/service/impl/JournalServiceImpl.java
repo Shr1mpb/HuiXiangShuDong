@@ -12,10 +12,10 @@ import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.exception.*;
 import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
-import edu.twt.rehuixiangshudong.zoo.result.Result;
 import edu.twt.rehuixiangshudong.zoo.util.AliOssUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class JournalServiceImpl implements JournalService {
     @Autowired
     private JournalMapper journalMapper;
@@ -219,5 +220,45 @@ public class JournalServiceImpl implements JournalService {
                 //上传失败
                 throw new UploadJournalPictureFailedException(MessageConstant.UPLOAD_FAILED);
             }
+    }
+
+    /**
+     * 删除日记图片
+     * @param uid 用户uid
+     * @param journalId 日记id
+     * @param pictureId 图片id
+     */
+    @Override
+    public void deleteJournalPicture(Integer uid, int journalId, int pictureId) {
+        //1.先判断日记是不是属于自己
+        JournalVO journal = journalMapper.getJournalByJID2(uid, journalId);
+        if (journal == null) {
+            throw new DeleteJournalPictureFailedException(MessageConstant.NO_JOURNAL_FOUND);
+        }
+        //2.日记属于自己 开始删除指定图片id的日记
+        PictureResult journalPictureByPID = journalMapper.getJournalPictureByPID(pictureId);
+        if (journalPictureByPID == null) {//日记图片不存在
+            throw new DeleteJournalPictureFailedException(MessageConstant.FILE_NOT_FOUND);
+        }
+        String oldUrl = journalPictureByPID.getPictureUrl();
+        String oldName = null;
+        if (oldUrl != null) {//如果原本有背景图片 获得oldName
+            oldName = oldUrl.substring(oldUrl.lastIndexOf("/") + 1);
+        }
+        //数据库删除日记图片
+        try {
+            journalMapper.deleteJournalPicture(pictureId);
+        } catch (Exception e) {
+            throw new DeleteJournalPictureFailedException(MessageConstant.DELETE_JOURNAL_PICTURE_FAILED);
+        }
+        //尝试删除旧url
+        try {
+            if (oldName != null) {
+                aliOssUtil.delete(oldName);
+                log.info("删除日记图片成功！所属用户 {},图片id {}",uid,pictureId);
+            }
+        } catch (Exception e) {
+            log.error("删除日记图片失败！uid{}:{}", uid, oldUrl);
+        }
     }
 }

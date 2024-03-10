@@ -168,6 +168,12 @@ public class JournalController {
         return Result.success(pictures);
     }
 
+    /**
+     * 上传日记图片
+     * @param journalId 日记id
+     * @param file 图片
+     * @return 返回文字结果
+     */
     @PostMapping("/uploadJournalPicture")
     public Result uploadJournalPicture(int journalId, MultipartFile file) {
         Integer uid = ThreadLocalUtil.getCurrentUid();
@@ -176,4 +182,14 @@ public class JournalController {
         journalService.uploadJournalPicture(uid,journalId, file);
         return Result.success(MessageConstant.UPLOAD_SUCCESS);
     }
+
+    @PutMapping("/deleteJournalPicture")
+    public Result deleteJournalPicture(int journalId,int pictureId) {
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        log.info("uid为 {} 的用户删除pictureId为 {} 的日记图片", uid, pictureId);
+
+        journalService.deleteJournalPicture(uid, journalId, pictureId);
+        return Result.success(MessageConstant.DELETE_JOURNALPICTURE_SUCCESS);
+    }
+
 }

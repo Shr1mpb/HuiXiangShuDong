@@ -1,10 +1,12 @@
 package edu.twt.rehuixiangshudong.mapper;
 
+import com.github.pagehelper.ISelect;
 import com.github.pagehelper.Page;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -72,4 +74,14 @@ public interface JournalMapper {
      */
     @Insert("insert into journal_pictures (journal_id_at, picture_url) VALUES (#{journalId},#{filePath})")
     void uploadJournalPicture(int journalId, String filePath);
+
+    @Select("select picture_id,picture_url from journal_pictures where picture_id = #{pictureId}")
+    PictureResult getJournalPictureByPID(int pictureId);
+
+    /**
+     * 删除日记图片
+     * @param pictureId 图片id
+     */
+    @Delete("delete from journal_pictures where picture_id = #{pictureId}")
+    void deleteJournalPicture(int pictureId);
 }

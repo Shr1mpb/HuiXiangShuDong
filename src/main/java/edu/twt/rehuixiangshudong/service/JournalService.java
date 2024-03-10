@@ -56,4 +56,12 @@ public interface JournalService {
      * @param file 图片文件
      */
     void uploadJournalPicture(int uid,int journalId, MultipartFile file);
+
+    /**
+     * 删除日记图片
+     * @param uid 用户uid
+     * @param journalId 日记id
+     * @param pictureId 图片id
+     */
+    void deleteJournalPicture(Integer uid, int journalId, int pictureId);
 }
