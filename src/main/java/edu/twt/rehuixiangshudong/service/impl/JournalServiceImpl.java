@@ -12,11 +12,17 @@ import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.exception.*;
 import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
+import edu.twt.rehuixiangshudong.zoo.result.Result;
+import edu.twt.rehuixiangshudong.zoo.util.AliOssUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class JournalServiceImpl implements JournalService {
@@ -26,6 +32,8 @@ public class JournalServiceImpl implements JournalService {
     private JournalGroupMapper journalGroupMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private AliOssUtil aliOssUtil;
 
     /**
      * 创建日记功能
@@ -177,5 +185,39 @@ public class JournalServiceImpl implements JournalService {
         }
         //日记是自己的 获取日记的图片信息
         return journalMapper.getJournalPictures(journalId);
+    }
+
+    @Override
+    public void uploadJournalPicture(int uid,int journalId, MultipartFile file) {
+        //1.先判断日记是不是属于自己
+        JournalVO journal = journalMapper.getJournalByJID2(uid, journalId);
+        if (journal == null) {
+            throw new UploadJournalPictureFailedException(MessageConstant.NO_JOURNAL_FOUND);
+        }
+        //2.日记属于自己 再判断该日记的图片有没有超过9个
+        List<PictureResult> journalPictures = journalMapper.getJournalPictures(journalId);
+        int size = journalPictures.size();
+        if (size > 9) {
+            throw new UploadJournalPictureFailedException(MessageConstant.PICTURE_EXCEEDED);
+        }
+        //3.日记图片没超过九个 开始上传
+            //获取原始文件名 并获取文件拓展名 并且用uuid拼接
+            String originalFilename = file.getOriginalFilename();
+            String extension = Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf("."));
+            String objectName = UUID.randomUUID() + extension;
+            //若扩展名不是 jpg 或 png
+            if (!(extension.equals(".jpg") || extension.equals(".png"))) {
+                throw new UploadJournalPictureFailedException(MessageConstant.UPLOAD_FILE_UNMATCHED);
+            }
+            //上传文件
+            try {
+                String filePath = aliOssUtil.upload(file.getBytes(), objectName);
+                //上传成功 数据库中新增URL
+                journalMapper.uploadJournalPicture(journalId,filePath);
+
+            } catch (Exception e) {
+                //上传失败
+                throw new UploadJournalPictureFailedException(MessageConstant.UPLOAD_FAILED);
+            }
     }
 }

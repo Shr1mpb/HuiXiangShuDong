@@ -145,5 +145,7 @@ public class MessageConstant {
     public static final String CHANGE_BACKGROUND_SUCCESS = "修改背景图片成功！";
     public static final String OSSFILE_DELETE_FAILED = "删除原有OSS文件失败！";
     public static final String ERROR_DATE_FORMAT = "日期格式不对！请传输yyyy-MM-dd格式";
+    public static final String UPLOAD_SUCCESS = "上传图片成功！";
+    public static final String PICTURE_EXCEEDED = "该日记图片已经超过九个！上传失败！";
 }
 

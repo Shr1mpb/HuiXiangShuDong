@@ -64,4 +64,12 @@ public interface JournalMapper {
      */
     @Select("select picture_id,picture_url from journal_pictures where journal_id_at = #{journalId}")
     List<PictureResult> getJournalPictures(int journalId);
+
+    /**
+     * 上传日记图片
+     * @param journalId 日记id
+     * @param filePath 图片URL
+     */
+    @Insert("insert into journal_pictures (journal_id_at, picture_url) VALUES (#{journalId},#{filePath})")
+    void uploadJournalPicture(int journalId, String filePath);
 }

@@ -5,6 +5,7 @@ import edu.twt.rehuixiangshudong.zoo.dto.JournalPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.result.PageResult;
 import edu.twt.rehuixiangshudong.zoo.result.PictureResult;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -48,4 +49,11 @@ public interface JournalService {
      * @return 返回集合
      */
     List<PictureResult> getJournalPictures(Integer uid, int journalId);
+
+    /**
+     * 上传日记图片
+     * @param journalId 要上传日记图片的日记的id
+     * @param file 图片文件
+     */
+    void uploadJournalPicture(int uid,int journalId, MultipartFile file);
 }

@@ -12,6 +12,8 @@ import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -164,5 +166,14 @@ public class JournalController {
         List<PictureResult> pictures = journalService.getJournalPictures(uid,journalId);
 
         return Result.success(pictures);
+    }
+
+    @PostMapping("/uploadJournalPicture")
+    public Result uploadJournalPicture(int journalId, MultipartFile file) {
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        log.info("uid为 {} 的用户上传了日记id{} 的日记图片", uid, journalId);
+
+        journalService.uploadJournalPicture(uid,journalId, file);
+        return Result.success(MessageConstant.UPLOAD_SUCCESS);
     }
 }
