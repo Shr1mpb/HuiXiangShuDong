@@ -25,6 +25,10 @@ public class GlobalExceptionHandler {
         if (ex.getMessage().contains("size exceeded")) {
             return Result.fail(MessageConstant.FILE_TOO_BIG);
         }
+        //未发现资源提示
+        if (ex.getMessage().contains("static resource")) {
+            return Result.fail(MessageConstant.RESOURCE_NOT_FOUND);
+        }
         //其他提示
         if(ex.getMessage().length() > 20){
             return Result.fail(MessageConstant.NOT_KNOWN_ERROR);

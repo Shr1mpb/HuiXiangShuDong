@@ -37,6 +37,15 @@ public class UserController {
     private AliOssUtil aliOssUtil;
 
     /**
+     * 根目录控制器
+     * 浏览器直接访问url默认是get请求
+     */
+    @GetMapping("/")
+    public String redirect() {
+        return "这里是回响树洞项目后端服务器,请确保你使用正确的接口进行访问";
+    }
+
+    /**
      * 用户注册
      */
     @PostMapping("/register")
@@ -219,7 +228,7 @@ public class UserController {
             String filePath = aliOssUtil.upload(file.getBytes(), objectName);
 
             //上传成功
-            userService.uploadUserProfilePicture(filePath,uid);
+            userService.uploadUserProfilePicture(filePath, uid);
             return Result.success(MessageConstant.CHANGE_PROFILE_PICTURE_SUCCESS);
         } catch (Exception e) {
             //上传失败
@@ -229,6 +238,7 @@ public class UserController {
 
     /**
      * 上传并修改用户背景图片
+     *
      * @param file 上传的文件
      * @return 返回文字结果
      */
@@ -253,7 +263,7 @@ public class UserController {
             String filePath = aliOssUtil.upload(file.getBytes(), objectName);
 
             //上传成功
-            userService.uploadUserBackgroundImage(filePath,uid);
+            userService.uploadUserBackgroundImage(filePath, uid);
             return Result.success(MessageConstant.CHANGE_BACKGROUND_SUCCESS);
         } catch (Exception e) {
             //上传失败

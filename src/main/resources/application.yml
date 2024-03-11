@@ -8,7 +8,7 @@ server:
     key-store: classpath:mambaout.xyz.pfx
     # “.pfx”证书对应格式，“.jks"证书对应“RSA”
     key-store-type: PKCS12
-    key-store-password: xwg1mokw
+    key-store-password:
     #key-password: 私钥密码
 
 spring:

@@ -34,8 +34,15 @@ public class TokenFilter implements jakarta.servlet.Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse)servletResponse;
         //1.获取请求url
         String url = httpServletRequest.getRequestURL().toString();
+        String uri = httpServletRequest.getRequestURI();//请求后缀 协议://域名"/xxx/xxx"
         log.info("收到请求 URL" + url + "来自" + httpServletRequest.getRemoteAddr());
         //2.判断是否为登录请求或注册请求或获取用户协议请求 如果是 放行
+        // 检查是否是根目录的请求
+        if ("/".equals(uri)) {
+            // 放行对根目录的请求，不执行后续过滤器链
+            filterChain.doFilter(servletRequest,servletResponse);
+            return;
+        }
         if (url.contains("login") || url.contains("register") ||url.contains("userAgreement")) {
             filterChain.doFilter(servletRequest,servletResponse);
             return;
