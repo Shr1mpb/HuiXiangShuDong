@@ -1,6 +1,15 @@
 server:
   #服务器端口
   port: 8080
+  ssl: #ssl配置
+    #打开ssl
+    enabled: true
+    # resources根目录的”证书源文件.pfx“
+    key-store: classpath:mambaout.xyz.pfx
+    # “.pfx”证书对应格式，“.jks"证书对应“RSA”
+    key-store-type: PKCS12
+    key-store-password:
+    #key-password: 私钥密码
 
 spring:
   profiles:
