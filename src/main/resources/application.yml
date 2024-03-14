@@ -10,6 +10,9 @@ server:
     key-store-type: PKCS12
     key-store-password:
     #key-password: 私钥密码
+#配置静态资源的前缀
+static:
+  url: http://8.130.98.175/images/
 
 spring:
   profiles:
@@ -34,6 +37,9 @@ spring:
       port: ${redis.port}
       password: ${redis.password}
       database: ${redis.database}
+  #设置静态资源访问的url
+  mvc:
+    static-path-pattern: /**
 
 
 mybatis:

@@ -43,7 +43,7 @@ public class TokenFilter implements jakarta.servlet.Filter {
             filterChain.doFilter(servletRequest,servletResponse);
             return;
         }
-        if (url.contains("login") || url.contains("register") ||url.contains("userAgreement")) {
+        if (url.contains("login") || url.contains("register") || url.contains("userAgreement") || url.contains("images")) {
             filterChain.doFilter(servletRequest,servletResponse);
             return;
         }

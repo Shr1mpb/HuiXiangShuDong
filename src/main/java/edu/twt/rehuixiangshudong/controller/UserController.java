@@ -1,9 +1,12 @@
 package edu.twt.rehuixiangshudong.controller;
 
+import edu.twt.rehuixiangshudong.mapper.UserMapper;
 import edu.twt.rehuixiangshudong.service.UserService;
 import edu.twt.rehuixiangshudong.zoo.constant.JwtClaimsConstant;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.dto.ChangePasswordDTO;
+import edu.twt.rehuixiangshudong.zoo.dto.SetDefaultPictureDTO;
+import edu.twt.rehuixiangshudong.zoo.properties.StaticProperties;
 import edu.twt.rehuixiangshudong.zoo.util.AliOssUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserInfoVO;
 import edu.twt.rehuixiangshudong.zoo.dto.UserInfoDTO;
@@ -35,6 +38,10 @@ public class UserController {
     private JwtProperties jwtProperties;
     @Autowired
     private AliOssUtil aliOssUtil;
+    @Autowired
+    private StaticProperties staticProperties;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 根目录控制器
@@ -269,5 +276,28 @@ public class UserController {
             //上传失败
             return Result.fail(MessageConstant.UPLOAD_FAILED);
         }
+    }
+    /**
+     * 根据数字1-8设置用户的 头像/背景图片 为默认的八张图片
+     */
+    @PutMapping("/setDefaultPictureByNum")
+    public Result<String> setDefaultPictureByNum(@RequestBody SetDefaultPictureDTO setDefaultPictureDTO){
+        int background = setDefaultPictureDTO.getBackground();
+        int userProfilePicture = setDefaultPictureDTO.getUserProfilePicture();
+        if (background < 0 || background > 8 || userProfilePicture < 0 || userProfilePicture > 8) {
+            return Result.fail(MessageConstant.SET_PICTURE_FAILED);
+        }
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+
+        if (background != 0) {
+            String backgroundUrl = staticProperties.getUrl() + background + ".jpg";
+            userMapper.uploadUserBackgroundImage(backgroundUrl,uid);
+        }
+        if (userProfilePicture != 0) {
+            String userProfilePictureUrl = staticProperties.getUrl() + userProfilePicture + ".jpg";
+            userMapper.uploadUserProfilePicture(userProfilePictureUrl, uid);
+        }
+
+        return Result.success(MessageConstant.SET_SUCCESS);
     }
 }

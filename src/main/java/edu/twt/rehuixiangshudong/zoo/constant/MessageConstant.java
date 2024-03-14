@@ -151,5 +151,7 @@ public class MessageConstant {
     public static final String FILE_NOT_FOUND = "文件不存在！";
     public static final String DELETE_JOURNAL_PICTURE_FAILED = "删除日记图片失败！";
     public static final String RESOURCE_NOT_FOUND = "资源不存在！";
+    public static final String SET_PICTURE_FAILED = "设置头像或背景图片失败！";
+    public static final String SET_SUCCESS = "设置成功！";
 }
 
