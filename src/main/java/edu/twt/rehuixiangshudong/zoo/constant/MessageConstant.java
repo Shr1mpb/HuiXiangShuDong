@@ -153,5 +153,6 @@ public class MessageConstant {
     public static final String RESOURCE_NOT_FOUND = "资源不存在！";
     public static final String SET_PICTURE_FAILED = "设置头像或背景图片失败！";
     public static final String SET_SUCCESS = "设置成功！";
+    public static final String ClientAbortException = "客户端异常终止！";
 }
 

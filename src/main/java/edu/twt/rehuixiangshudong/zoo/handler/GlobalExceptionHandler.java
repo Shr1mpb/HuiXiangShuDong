@@ -17,6 +17,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public Result<Object> exceptionHandler(Exception ex) {
         log.error("异常为：{}",ex.getClass());
+        if (ex.getClass().getName().contains("ClientAbortException")) {//拦截ClientAbortException
+            return Result.fail(MessageConstant.ClientAbortException);
+        }
         log.error("异常信息为：{}",ex.getMessage());
         if (ex.getMessage() == null){//异常信息为空 避免空指针异常
             return Result.fail(MessageConstant.NOT_KNOWN_ERROR);
