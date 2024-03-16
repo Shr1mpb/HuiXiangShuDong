@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import com.alibaba.fastjson2.JSONObject;
 import java.io.IOException;
@@ -28,6 +30,8 @@ public class TokenFilter implements jakarta.servlet.Filter {
     private JwtProperties jwtProperties;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
@@ -70,35 +74,54 @@ public class TokenFilter implements jakarta.servlet.Filter {
             httpServletResponse.getWriter().write(notLogin);
             return;
         }
-        //比较时间
-        //获取用户名 并通过mapper获取用户的最后登录时间
-        String username = (String) claims.get(JwtClaimsConstant.USERNAME);
-        Timestamp lastLoginTime = userMapper.getLastLoginTimeByUsername(username);
+        //获取用户uid
         int uid = (int)claims.get(JwtClaimsConstant.USER_ID);
         //使用ThreadLocal记住当前的uid
         ThreadLocalUtil.setCurrentUid(uid);
-        //获取签发时间
-        Timestamp createTime = new Timestamp((long)claims.get(JwtClaimsConstant.CREATE_AT));
-        int result = createTime.compareTo(lastLoginTime);
-        //compareTo方法比较Timestamp类 若小于零则调用者小
-        if (result < 0) {
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        String redisJwt = operations.get(jwt);
+        //若redis中没有jwt 则令其失效
+        if (redisJwt == null) {
             log.info("uid为 {} 用户的令牌过期失效！",uid);
+            httpServletResponse.setStatus(401);
             Result<Object> fail = Result.fail(0,"NOT_LOGIN");
             String notLogin = JSONObject.toJSONString(fail);
             httpServletResponse.getWriter().write(notLogin);
             return;
         }
+/*下面是之前通过数据库操作判断令牌是否过期
+//比较时间
+//获取用户名 并通过mapper获取用户的最后登录时间
+String username = (String) claims.get(JwtClaimsConstant.USERNAME);
+Timestamp lastLoginTime = userMapper.getLastLoginTimeByUsername(username);
+int uid = (int)claims.get(JwtClaimsConstant.USER_ID);
+//使用ThreadLocal记住当前的uid
+ThreadLocalUtil.setCurrentUid(uid);
+//获取签发时间
+Timestamp createTime = new Timestamp((long)claims.get(JwtClaimsConstant.CREATE_AT));
+int result = createTime.compareTo(lastLoginTime);
+//compareTo方法比较Timestamp类 若小于零则调用者小
+if (result < 0) {
+    log.info("uid为 {} 用户的令牌过期失效！",uid);
+    Result<Object> fail = Result.fail(0,"NOT_LOGIN");
+    String notLogin = JSONObject.toJSONString(fail);
+    httpServletResponse.getWriter().write(notLogin);
+    return;
+        }
+ */
 
-        //6.解析token
-        try {
-            JwtUtil.parseJWT(jwtProperties.getSecretKey(),jwt);
-        } catch (Exception e) {//解析失败 返回错误结果
-            log.info("解析jwt令牌失败！");
-            Result<Object> fail = Result.fail(0,"NOT_LOGIN");
-            String notLogin = JSONObject.toJSONString(fail);
-            httpServletResponse.getWriter().write(notLogin);
-            return;
+/*前面已经做过解析，此处不再解析
+//6.解析token
+try {
+    JwtUtil.parseJWT(jwtProperties.getSecretKey(),jwt);
+} catch (Exception e) {//解析失败 返回错误结果
+    log.info("解析jwt令牌失败！");
+    Result<Object> fail = Result.fail(0,"NOT_LOGIN");
+    String notLogin = JSONObject.toJSONString(fail);
+    httpServletResponse.getWriter().write(notLogin);
+    return;
         }
+*/
         //7.放行
         filterChain.doFilter(servletRequest,servletResponse);
     }

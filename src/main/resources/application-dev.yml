@@ -13,3 +13,11 @@ alioss:
   access-key-secret: AFXJ6yX3luvN4ulvVu8meDWZDTj2D0
   endpoint: oss-cn-beijing.aliyuncs.com
   bucket-name: huixiangshudong
+
+
+#redis配置
+redis:
+  database: 0
+  host: 192.168.88.129
+  password: 1234
+  port: 6379

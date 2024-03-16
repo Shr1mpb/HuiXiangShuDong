@@ -19,6 +19,8 @@ import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.UserRegisterAndLoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping
@@ -42,6 +45,8 @@ public class UserController {
     private StaticProperties staticProperties;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 根目录控制器
@@ -78,6 +83,9 @@ public class UserController {
                 claims
         );
 
+        //生成的token存入redis中
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.set(token,token,jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
         //包装返回结果
         UserRegisterAndLoginVO userRegisterAndLoginVO = UserRegisterAndLoginVO.builder()
                 .uid(user.getUid())
@@ -113,6 +121,9 @@ public class UserController {
                 jwtProperties.getTtl(),
                 claims
         );
+        //生成的token存入redis中
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.set(token,token,jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
         UserRegisterAndLoginVO userRegisterAndLoginVO = UserRegisterAndLoginVO.builder()
                 .uid(user.getUid())
                 .username(user.getUsername())
@@ -142,7 +153,7 @@ public class UserController {
      * @return 返回JSON格式的数据
      */
     @PutMapping("/changePassword")
-    public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO) {
+    public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO,@RequestHeader("token")String token) {
         if (changePasswordDTO == null) {
             return Result.fail(MessageConstant.COMMON_ERROR);
         }
@@ -151,6 +162,9 @@ public class UserController {
 
         userService.changePassWord(changePasswordDTO, uid);
 
+        //修改密码成功后 删除redis中存储的令牌
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.getOperations().delete(token);
         return Result.success(MessageConstant.CHANGE_PASSWORD_SUCCESS);
     }
 
@@ -160,11 +174,15 @@ public class UserController {
      * @return 返回成功信息 保存在data中
      */
     @GetMapping("/logout")
-    public Result logout() {
+    public Result logout(@RequestHeader("token")String token) {
         //获取token中的uid
         Integer uid = ThreadLocalUtil.getCurrentUid();
         log.info("uid为 {} 的用户登出...", uid);
         userService.logout(uid);
+
+        //登出成功后 删除redis中存储的令牌
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.getOperations().delete(token);
 
         return new Result(MessageConstant.LOGOUT_SUCCEED);
     }
