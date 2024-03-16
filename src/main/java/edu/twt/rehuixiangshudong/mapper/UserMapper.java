@@ -96,7 +96,7 @@ public interface UserMapper {
      * @param uid ThreadLocalUtil类从token中获取的uid
      * @return 返回UserInfoVo类
      */
-    @Select("select uid,username,nickname,gender,birth_date,journal_count,journal_group_count,text_count,location,background_image,user_profile_picture" +
+    @Select("select uid,username,nickname,gender,birth_date,write_days,journal_count,journal_group_count,text_count,location,background_image,user_profile_picture" +
             " from users where uid = #{uid}")
     UserInfoVO getUserInfo(Integer uid);
 
