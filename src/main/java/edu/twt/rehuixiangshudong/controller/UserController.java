@@ -69,8 +69,6 @@ public class UserController {
 
         User user = userService.register(userRegisterAndLoginDTO);
 
-        Thread.sleep(300);
-
         //生成token
         Map<String, Object> claims = new HashMap<>();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -108,8 +106,6 @@ public class UserController {
         log.info("用户登录：{}", userRegisterAndLoginDTO);
 
         User user = userService.login(userRegisterAndLoginDTO);
-
-        Thread.sleep(500);
 
         Map<String, Object> claims = new HashMap<>();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
