@@ -134,7 +134,7 @@ public interface UserMapper {
      * 获取用户日记总字数(未删除)
      */
     @Select("select SUM(char_length(journal_text)) from journals where user_id_at = #{uid} and is_deleted = 0")
-    int getUserTextCount(int uid);
+    Integer getUserTextCount(int uid);
 
     /**
      * 设置用户日记总字数

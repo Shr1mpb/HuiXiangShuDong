@@ -23,8 +23,10 @@ public class AddedTask {
         //遍历每个uid 并且为他们更新字数
         try {
             for (int uid : currentAllUids) {
-                int userTextCount = userMapper.getUserTextCount(uid);
-                userMapper.setUserTextCount(userTextCount,uid);
+                Integer userTextCount = userMapper.getUserTextCount(uid);
+                if (userTextCount != null){
+                    userMapper.setUserTextCount(userTextCount,uid);
+                }
             }
             log.info("更新所有用户字数成功！");
         } catch (Exception e) {
