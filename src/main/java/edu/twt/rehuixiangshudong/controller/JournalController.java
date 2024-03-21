@@ -147,19 +147,16 @@ public class JournalController {
         Pattern pattern = Pattern.compile(DATE_PATTERN);
         Matcher matcher = pattern.matcher(journalPageQueryDTO.getDate());
         if (journalPageQueryDTO.getDate().isEmpty()){//日期栏没填，不判断格式直接查询全部
-            Integer uid = ThreadLocalUtil.getCurrentUid();
-            journalPageQueryDTO.setUserIdAt(uid);
-            log.info("uid为 {} 的用户分页查询日记 {}", uid, journalPageQueryDTO);
-
-            PageResult pageResult = journalService.getJournalsByUid(journalPageQueryDTO);
-
-            return Result.success(pageResult);
         }else if (!matcher.matches()) {//日期格式不对 直接返回错误信息
             return Result.fail(MessageConstant.ERROR_DATE_FORMAT);
-        }else {
-            return Result.fail(MessageConstant.GET_JOURNALS_FAILED);
         }
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        journalPageQueryDTO.setUserIdAt(uid);
+        log.info("uid为 {} 的用户分页查询日记 {}", uid, journalPageQueryDTO);
 
+        PageResult pageResult = journalService.getJournalsByUid(journalPageQueryDTO);
+
+        return Result.success(pageResult);
 
     }
 
