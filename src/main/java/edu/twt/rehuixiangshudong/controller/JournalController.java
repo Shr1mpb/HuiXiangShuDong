@@ -102,21 +102,31 @@ public class JournalController {
 
     /**
      * 在日记串中创建日记
-     * @param journalDTO 传输日记相关信息
      * @return 返回信息结果
      */
     @PostMapping("/createJournalAtJournalGroup")
-    public Result<Object> createJournalAtJournalGroup(@RequestBody JournalDTO journalDTO) {
-        if (journalDTO == null) {
-            return Result.fail(MessageConstant.COMMON_ERROR);
-        }
+    public Result<Object> createJournalAtJournalGroup(List<MultipartFile> files,String location,String journalTitle,String journalText,Integer topJournal,Integer journalGroupIdAt) {
+        JournalDTO journalDTO = new JournalDTO();
+        journalDTO.setLocation(location);
+        journalDTO.setJournalTitle(journalTitle);
+        journalDTO.setJournalText(journalText);
+        journalDTO.setTopJournal(topJournal);
+        journalDTO.setJournalGroupIdAt(journalGroupIdAt);
+
         //获取token中的uid,并将其设置到journalDTO中
         Integer uid = ThreadLocalUtil.getCurrentUid();
         journalDTO.setUserIdAt(uid);
         Integer journalGroupId = journalDTO.getJournalGroupIdAt();
         log.info("uid为 {} 的用户在 日记串{} 中创建日记 {}",uid,journalGroupId,journalDTO);
 
+        //创建日记
         journalService.createJournalAtJournalGroup(journalDTO);
+        //创建成功，为该日记上传文件(通过主键回显拿到日记id)
+        if (!files.isEmpty()) {
+            for (MultipartFile file : files) {
+                journalService.uploadJournalPicture(uid, journalDTO.getJournalId(), file);
+            }
+        }
 
         return Result.success(MessageConstant.CREATE_JOURNAL_SUCCESS);
     }
