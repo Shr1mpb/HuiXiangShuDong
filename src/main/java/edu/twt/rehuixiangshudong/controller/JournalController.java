@@ -157,7 +157,8 @@ public class JournalController {
         }else if (!matcher.matches()) {//日期格式不对 直接返回错误信息
             return Result.fail(MessageConstant.ERROR_DATE_FORMAT);
         }else {
-            return Result.fail(MessageConstant.GET_JOURNALS_FAILED);
+            PageResult pageResult = journalService.getJournalsByUid(journalPageQueryDTO);
+            return Result.success(pageResult);
         }
 
 
