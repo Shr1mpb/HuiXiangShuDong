@@ -27,20 +27,29 @@ public class JournalController {
     private static final String DATE_PATTERN = "^\\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01])$";
     /**
      * 创建日记
-     * @param journalDTO 传输日记信息
      * @return 返回成功消息
      */
     @PostMapping("/createJournal")
-    public Result<Object> createJournal(@RequestBody JournalDTO journalDTO){
-        if (journalDTO == null) {
-            return Result.fail(MessageConstant.COMMON_ERROR);
-        }
+    public Result<Object> createJournal(List<MultipartFile> files, String location,String journalTitle,String journalText,Integer topJournal){
+
+        JournalDTO journalDTO = new JournalDTO();
+        journalDTO.setLocation(location);
+        journalDTO.setJournalTitle(journalTitle);
+        journalDTO.setJournalText(journalText);
+        journalDTO.setTopJournal(topJournal);
         //获取token中的uid,并将其设置到journalDTO中
         Integer uid = ThreadLocalUtil.getCurrentUid();
         journalDTO.setUserIdAt(uid);
 
         log.info("uid为 {} 的用户创建日记 {}",uid,journalDTO);
         journalService.createJournal(journalDTO);
+
+        //创建日记成功后，为日记上传日记图片
+        if (!files.isEmpty()){
+            for (MultipartFile file : files) {
+                journalService.uploadJournalPicture(uid,journalDTO.getJournalId(),file);
+            }
+        }
 
         return Result.success(MessageConstant.CREATE_JOURNAL_SUCCESS);
     }
@@ -57,14 +66,10 @@ public class JournalController {
         }
         //获取token中的uid
         Integer uid = ThreadLocalUtil.getCurrentUid();
+        journalDTO.setUserIdAt(uid);
 
         log.info("uid为 {} 的用户修改日记 {}",uid,journalDTO);
 
-        if (journalDTO != null) {//非空判断 防止空指针异常
-            journalDTO.setUserIdAt(uid);
-        }else {
-            return Result.fail(MessageConstant.MODIFY_JOURNAL_FAILED);
-        }
         journalService.modifyJournal(journalDTO);
         if (journalDTO.getIsDeleted() == 1) {
             return Result.success(MessageConstant.DELETE_JOURNAL_SUCCESS);
@@ -142,16 +147,19 @@ public class JournalController {
         Pattern pattern = Pattern.compile(DATE_PATTERN);
         Matcher matcher = pattern.matcher(journalPageQueryDTO.getDate());
         if (journalPageQueryDTO.getDate().isEmpty()){//日期栏没填，不判断格式直接查询全部
+            Integer uid = ThreadLocalUtil.getCurrentUid();
+            journalPageQueryDTO.setUserIdAt(uid);
+            log.info("uid为 {} 的用户分页查询日记 {}", uid, journalPageQueryDTO);
+
+            PageResult pageResult = journalService.getJournalsByUid(journalPageQueryDTO);
+
+            return Result.success(pageResult);
         }else if (!matcher.matches()) {//日期格式不对 直接返回错误信息
             return Result.fail(MessageConstant.ERROR_DATE_FORMAT);
+        }else {
+            return Result.fail(MessageConstant.GET_JOURNALS_FAILED);
         }
-        Integer uid = ThreadLocalUtil.getCurrentUid();
-        journalPageQueryDTO.setUserIdAt(uid);
-        log.info("uid为 {} 的用户分页查询日记 {}", uid, journalPageQueryDTO);
 
-        PageResult pageResult = journalService.getJournalsByUid(journalPageQueryDTO);
-
-        return Result.success(pageResult);
 
     }
 
