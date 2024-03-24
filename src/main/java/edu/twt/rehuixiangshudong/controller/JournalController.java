@@ -45,7 +45,7 @@ public class JournalController {
         journalService.createJournal(journalDTO);
 
         //创建日记成功后，为日记上传日记图片
-        if (!files.isEmpty()){
+        if (files != null){
             for (MultipartFile file : files) {
                 journalService.uploadJournalPicture(uid,journalDTO.getJournalId(),file);
             }
@@ -127,7 +127,7 @@ public class JournalController {
         //创建日记
         journalService.createJournalAtJournalGroup(journalDTO);
         //创建成功，为该日记上传文件(通过主键回显拿到日记id)
-        if (!files.isEmpty()) {
+        if (files != null) {
             for (MultipartFile file : files) {
                 journalService.uploadJournalPicture(uid, journalDTO.getJournalId(), file);
             }
