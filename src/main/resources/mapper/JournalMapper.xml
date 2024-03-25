@@ -12,7 +12,7 @@
             <if test="journalGroupIdAt != null">journal_group_id_at = #{journalGroupIdAt},</if>
             <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
         </trim>
-        where user_id_at = #{userIdAt} and is_deleted = 0
+        where user_id_at = #{userIdAt} and is_deleted = 0 and journal_id = #{journalId}
     </update>
     <select id="getJournalsByUid" resultType="edu.twt.rehuixiangshudong.zoo.vo.JournalVO">
         select journal_id,journal_title,created_at,modified_at,location,shared_count,
