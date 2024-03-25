@@ -107,17 +107,19 @@ public class JournalServiceImpl implements JournalService {
         //限制isDeleted传输0/1
         if (journalDTO.getIsDeleted() != null) {
             int isDeleted = journalDTO.getIsDeleted();
-            //限制topJournal传输0或1
+            //限制isDeleted传输0或1
             if(isDeleted != 0 && isDeleted  != 1 ){
                 throw new SetTopJournalFailedException(MessageConstant.SET_TOPJOURNAL_FAILED);
             }
         }
-        //如果删除日记 先让用户日记数-1
-        if (journalDTO.getIsDeleted() == 1) {
-            userMapper.updateJournalCount(-1,journalDTO.getUserIdAt());
-        }
+
+
         try {
             journalMapper.modifyJournal(journalDTO);
+            //如果删除日记 成功后让用户日记数-1
+            if (journalDTO.getIsDeleted() != null && journalDTO.getIsDeleted() == 1) {
+                userMapper.updateJournalCount(-1,journalDTO.getUserIdAt());
+            }
         } catch (Exception e) {
             throw new ModifyJournalFailedException(MessageConstant.MODIFY_JOURNAL_FAILED);
         }

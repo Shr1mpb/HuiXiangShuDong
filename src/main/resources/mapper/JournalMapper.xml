@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.twt.rehuixiangshudong.mapper.JournalMapper">
     <update id="modifyJournal">
-        update JOURNALS
+        update journals
         <trim prefix="set" suffixOverrides=",">
             <if test="location != null">location = #{location},</if>
             <if test="journalTitle != null">journal_title = #{journalTitle},</if>
