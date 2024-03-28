@@ -304,7 +304,7 @@ public class UserController {
         Integer uid = ThreadLocalUtil.getCurrentUid();
 
         if (background != 0) {
-            String backgroundUrl = staticProperties.getUrl() + background + background + ".jpg";
+            String backgroundUrl = staticProperties.getUrl() + "1" + background + ".jpg";
             userMapper.uploadUserBackgroundImage(backgroundUrl, uid);
         }
         if (userProfilePicture != 0) {
