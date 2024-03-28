@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler
     public void clientAbortExceptionHandler(ClientAbortException clientAbortException) {
-        log.error("客户端中断了连接！");
+        log.error(MessageConstant.ClientAbortException);
     }
     /**
      *捕获业务逻辑异常

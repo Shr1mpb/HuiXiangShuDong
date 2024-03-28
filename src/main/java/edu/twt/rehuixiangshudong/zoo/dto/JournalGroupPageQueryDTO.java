@@ -1,5 +1,6 @@
 package edu.twt.rehuixiangshudong.zoo.dto;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,5 +16,7 @@ public class JournalGroupPageQueryDTO {
     private String journalGroupName;
     @ApiModelProperty("日记串所属用户uid")
     private Integer userIdAt;
+    @ApiModelProperty("是否升序")
+    private int asc;
 
 }

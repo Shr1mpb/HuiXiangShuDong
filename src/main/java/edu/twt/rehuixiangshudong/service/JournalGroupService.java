@@ -29,7 +29,7 @@ public interface JournalGroupService {
      * @param journalGroupId 传输日记串id
      * @return List集合
      */
-    List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId);
+    List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId,int asc);
 
     /**
      * 修改日记串名字

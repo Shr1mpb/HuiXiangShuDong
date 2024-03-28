@@ -26,6 +26,8 @@ public class JournalPageQueryDTO implements Serializable {
     private String date;
     @ApiModelProperty("后续转换用到的年份 查询具体到月的日期时会使用")
     private String year;
+    @ApiModelProperty("是否升序")
+    private int asc;
 
 
 }

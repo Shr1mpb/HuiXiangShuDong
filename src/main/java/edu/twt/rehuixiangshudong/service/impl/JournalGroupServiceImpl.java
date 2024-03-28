@@ -69,18 +69,18 @@ public class JournalGroupServiceImpl implements JournalGroupService {
      * @return 返回List集合
      */
     @Override
-    public List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId) {
+    public List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId,int asc) {
         //先判断日记串属不属于自己
         JournalGroupVO journalGroupVO = journalGroupMapper.getJournalGroup(uid,journalGroupId);
         if (journalGroupVO == null) {//如果日记串不存在 返回日记串不存在字样
             throw new GetJournalsFailedException(MessageConstant.JOURNAL_GROUP_MATCH_FAILED);
         }
         //日记串存在且属于自己 进行查询
-        try {
-            return journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId);
-        } catch (Exception e) {
-            throw new GetJournalsFailedException(MessageConstant.GET_JOURNALS_FAILED);
-        }
+//        try {
+            return journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId,asc);
+//        } catch (Exception e) {
+//            throw new GetJournalsFailedException(MessageConstant.GET_JOURNALS_FAILED);
+//        }
     }
 
     /**
@@ -117,7 +117,7 @@ public class JournalGroupServiceImpl implements JournalGroupService {
             throw new DeleteJournalGroupFailedException(MessageConstant.GET_JOURNALGROUPS_FAILED);
         }
         //再判断日记串中是否含有日记 如果含有则删除失败
-        List<JournalVO> journalsInJournalGroup = journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId);
+        List<JournalVO> journalsInJournalGroup = journalGroupMapper.getJournalsInJournalGroup(uid, journalGroupId,0);
         if (journalsInJournalGroup != null && !(journalsInJournalGroup.isEmpty())) {//日记串不空的情况
             throw new DeleteJournalGroupFailedException(MessageConstant.DELETE_JOURNAL_GROUP_FAILED);
         }

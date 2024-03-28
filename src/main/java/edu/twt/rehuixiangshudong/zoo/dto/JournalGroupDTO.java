@@ -19,4 +19,6 @@ public class JournalGroupDTO implements Serializable {
     private Integer isDeleted;
     @ApiModelProperty("日记串所属的用户")
     private Integer userIdAt;
+    @ApiModelProperty("是否升序")
+    private int asc;
 }

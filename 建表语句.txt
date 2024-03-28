@@ -20,6 +20,7 @@ create table users
     search_history      TEXT         default NULL     NULL comment '用户搜索的历史记录备份',
     register_time       DATETIME     default CURRENT_TIMESTAMP     not NULL comment '用户注册的时间',
     last_login_time     DATETIME     default CURRENT_TIMESTAMP     not NULL comment '用户最后登录的时间',
+    calendar_picture    varchar(255) default NULL     NULL comment '用户自定义的日历图片',
     user_profile_picture  varchar(255) default        NULL                  comment '用户的头像URL',
     constraint user_pk
         primary key (uid)

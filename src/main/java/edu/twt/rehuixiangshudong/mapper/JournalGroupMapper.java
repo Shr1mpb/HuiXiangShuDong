@@ -5,10 +5,7 @@ import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupDTO;
 import edu.twt.rehuixiangshudong.zoo.dto.JournalGroupPageQueryDTO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -38,11 +35,8 @@ public interface JournalGroupMapper {
      * @param journalGroupId 指定的日记串id
      * @return 返回list结果
      */
-    @Select("SELECT journal_id,journal_title,created_at,modified_at,location,shared_count,journal_group_id_at,journal_text " +
-            "FROM journals " +
-            "where journal_group_id_at = #{journalGroupId} and user_id_at = #{uid} and is_deleted = 0 " +
-            "ORDER BY created_at DESC")
-    List<JournalVO> getJournalsInJournalGroup(Integer uid, Integer journalGroupId);
+
+    List<JournalVO> getJournalsInJournalGroup(@Param("uid") Integer uid, @Param("journalGroupId") Integer journalGroupId,@Param("asc") int asc);
 
     /**
      * 修改日记串名字

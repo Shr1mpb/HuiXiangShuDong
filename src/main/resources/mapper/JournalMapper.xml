@@ -33,6 +33,7 @@
                 and YEAR(created_at) = #{date}
             </if>
         </where>
-        ORDER BY top_journal DESC , created_at DESC
+        <if test="asc == 0">ORDER BY top_journal DESC , created_at DESC</if>
+        <if test="asc == 1">ORDER BY top_journal ASC , created_at ASC</if>
     </select>
 </mapper>

@@ -81,8 +81,8 @@ public class JournalGroupController {
         Integer journalGroupId = journalGroupDTO.getJournalGroupId();
 
         log.info("uid为 {} 的用户 查询 日记串id为 {} 的日记串中的全部日记 ",uid,journalGroupId);
-
-        List<JournalVO> journalVOS = journalGroupService.getJournalsInJournalGroup(uid, journalGroupId);
+        int asc = journalGroupDTO.getAsc();
+        List<JournalVO> journalVOS = journalGroupService.getJournalsInJournalGroup(uid, journalGroupId,asc);
 
         return Result.success(journalVOS);
 

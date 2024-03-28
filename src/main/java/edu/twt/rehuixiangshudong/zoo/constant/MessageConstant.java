@@ -154,5 +154,7 @@ public class MessageConstant {
     public static final String SET_PICTURE_FAILED = "设置头像或背景图片失败！";
     public static final String SET_SUCCESS = "设置成功！";
     public static final String ClientAbortException = "客户端异常终止！";
+    public static final String CUSTOM_CALENDAR_SUCCESS = "上传日历图成功！";
+    public static final String GET_CALENDAR_PICTURE_FAILED = "获取日历图片失败！";
 }
 

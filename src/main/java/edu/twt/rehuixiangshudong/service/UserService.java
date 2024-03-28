@@ -60,4 +60,11 @@ public interface UserService {
      * @param uid 用户的uid
      */
     void uploadUserBackgroundImage(String filePath, Integer uid);
+
+    /**
+     * 上传自定义日历图
+     * @param filePath 文件路径
+     * @param uid 用户uid
+     */
+    void uploadCalendarPicture(String filePath, Integer uid);
 }

@@ -4,12 +4,19 @@
 <mapper namespace="edu.twt.rehuixiangshudong.mapper.JournalGroupMapper">
     <select id="getJournalGroups" resultType="edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO">
         select journal_group_id,journal_group_name,created_at,modified_at,journal_count from journal_groups
-        <where>
+        where
             user_id_at = #{userIdAt} and is_deleted = 0
         <if test="journalGroupName != null and journalGroupName != ''">
             and journal_group_name like concat('%',#{journalGroupName},'%')
         </if>
-        </where>
-        ORDER BY created_at DESC
+        <if test="asc == 0"> ORDER BY created_at DESC</if>
+        <if test="asc == 1"> ORDER BY created_at ASC</if>
+    </select>
+    <select id="getJournalsInJournalGroup" resultType="edu.twt.rehuixiangshudong.zoo.vo.JournalVO">
+        select journal_id,journal_title,created_at,modified_at,location,shared_count,journal_group_id_at,journal_text from journals
+        where
+            journal_group_id_at = #{journalGroupId} and user_id_at = #{uid} and is_deleted = 0
+        <if test="asc == 0"> ORDER BY created_at DESC </if>
+        <if test="asc == 1"> ORDER BY created_at ASC </if>
     </select>
 </mapper>

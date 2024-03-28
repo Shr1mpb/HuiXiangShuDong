@@ -227,4 +227,30 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
+    /**
+     * 上传并更改日历图 上传成功后删除原有文件
+     * @param filePath 文件路径
+     * @param uid 用户uid
+     */
+    @Override
+    public void uploadCalendarPicture(String filePath, Integer uid) {
+        //先获取原有图片url 再获取原有图片名字
+        String calendarPicture = userMapper.getCalendarPicture(uid);
+        String oldName = null;
+        if (calendarPicture != null) {//如果原本有背景图片 获得oldName
+            oldName = calendarPicture.substring(calendarPicture.lastIndexOf("/") + 1);
+        }
+        //数据库修改图片url
+        userMapper.uploadCalendarPicture(filePath, uid);
+        //尝试删除旧url
+        try {
+            if (oldName != null) {
+                aliOssUtil.delete(oldName);
+                log.info("删除旧OSS文件成功！所属用户{}",uid);
+            }
+        } catch (Exception e) {
+            log.error("删除OSS旧文件失败！{}",calendarPicture);
+        }
+    }
 }

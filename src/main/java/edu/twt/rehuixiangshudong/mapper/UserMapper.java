@@ -161,4 +161,18 @@ public interface UserMapper {
     List<Integer> getCurrentAllUids();
 
 
+    /**
+     * 获取用户的日历图
+     * @param uid 用户uid
+     */
+    @Select("select calendar_picture from users where uid = #{uid}")
+    String getCalendarPicture(Integer uid);
+
+    /**
+     * 上传用户的日历图
+     * @param filePath 日历图url
+     * @param uid uid
+     */
+    @Insert("update users set calendar_picture = #{filePath} where uid = #{uid}")
+    void uploadCalendarPicture(String filePath, Integer uid);
 }

@@ -62,11 +62,10 @@ public class UserController {
      */
     @PostMapping("/register")
     public Result<UserRegisterAndLoginVO> register(@RequestBody UserRegisterAndLoginDTO userRegisterAndLoginDTO) throws InterruptedException {
-        if (userRegisterAndLoginDTO == null) {
+        if (userRegisterAndLoginDTO == null || userRegisterAndLoginDTO.getUsername().isEmpty() || userRegisterAndLoginDTO.getPassword().isEmpty()) {
             return Result.fail(MessageConstant.REGISTER_ERROR);
         }
         log.info("用户注册：{}", userRegisterAndLoginDTO);
-
         User user = userService.register(userRegisterAndLoginDTO);
 
         //生成token
@@ -83,7 +82,7 @@ public class UserController {
 
         //生成的token存入redis中
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.set(token,token,jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
+        operations.set(token, token, jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
         //包装返回结果
         UserRegisterAndLoginVO userRegisterAndLoginVO = UserRegisterAndLoginVO.builder()
                 .uid(user.getUid())
@@ -119,7 +118,7 @@ public class UserController {
         );
         //生成的token存入redis中
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.set(token,token,jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
+        operations.set(token, token, jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
         UserRegisterAndLoginVO userRegisterAndLoginVO = UserRegisterAndLoginVO.builder()
                 .uid(user.getUid())
                 .username(user.getUsername())
@@ -149,7 +148,7 @@ public class UserController {
      * @return 返回JSON格式的数据
      */
     @PutMapping("/changePassword")
-    public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO,@RequestHeader("token")String token) {
+    public Result<Object> changePassWord(@RequestBody ChangePasswordDTO changePasswordDTO, @RequestHeader("token") String token) {
         if (changePasswordDTO == null) {
             return Result.fail(MessageConstant.COMMON_ERROR);
         }
@@ -170,7 +169,7 @@ public class UserController {
      * @return 返回成功信息 保存在data中
      */
     @GetMapping("/logout")
-    public Result logout(@RequestHeader("token")String token) {
+    public Result logout(@RequestHeader("token") String token) {
         //获取token中的uid
         Integer uid = ThreadLocalUtil.getCurrentUid();
         log.info("uid为 {} 的用户登出...", uid);
@@ -291,11 +290,12 @@ public class UserController {
             return Result.fail(MessageConstant.UPLOAD_FAILED);
         }
     }
+
     /**
      * 根据数字1-8设置用户的 头像/背景图片 为默认的八张图片
      */
     @PutMapping("/setDefaultPictureByNum")
-    public Result<String> setDefaultPictureByNum(@RequestBody SetDefaultPictureDTO setDefaultPictureDTO){
+    public Result<String> setDefaultPictureByNum(@RequestBody SetDefaultPictureDTO setDefaultPictureDTO) {
         int background = setDefaultPictureDTO.getBackground();
         int userProfilePicture = setDefaultPictureDTO.getUserProfilePicture();
         if (background < 0 || background > 8 || userProfilePicture < 0 || userProfilePicture > 8) {
@@ -305,7 +305,7 @@ public class UserController {
 
         if (background != 0) {
             String backgroundUrl = staticProperties.getUrl() + background + background + ".jpg";
-            userMapper.uploadUserBackgroundImage(backgroundUrl,uid);
+            userMapper.uploadUserBackgroundImage(backgroundUrl, uid);
         }
         if (userProfilePicture != 0) {
             String userProfilePictureUrl = staticProperties.getUrl() + userProfilePicture + ".jpg";
@@ -313,5 +313,50 @@ public class UserController {
         }
 
         return Result.success(MessageConstant.SET_SUCCESS);
+    }
+
+    /**
+     * 自定义日历图
+     */
+    @PostMapping("/customCalendar")
+    public Result<String> customCalendar(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return Result.fail(MessageConstant.COMMON_ERROR);
+        }
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        log.info("uid为 {} 的用户上传自定义日历图",uid);
+        //获取原始文件名 并获取文件拓展名 并且用uuid拼接
+        String originalFilename = file.getOriginalFilename();
+        String extension = Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf("."));
+        String objectName = UUID.randomUUID() + extension;
+        //若扩展名不是 jpg 或 png
+        if (!(extension.equals(".jpg") || extension.equals(".png"))) {
+            return Result.fail(MessageConstant.UPLOAD_FILE_UNMATCHED);
+        }//上传文件
+        try {
+            String filePath = aliOssUtil.upload(file.getBytes(), objectName);
+
+            //上传成功
+            userService.uploadCalendarPicture(filePath, uid);
+            return Result.success(MessageConstant.CUSTOM_CALENDAR_SUCCESS);
+        } catch (Exception e) {
+            //上传失败
+            return Result.fail(MessageConstant.UPLOAD_FAILED);
+        }
+    }
+
+    /**
+     * 获取用户日历图
+     */
+    @GetMapping("/getCustomCalendar")
+    public Result<String> getCustomCalendar() {
+        Integer uid = ThreadLocalUtil.getCurrentUid();
+        try {
+            String calendarPicture = userMapper.getCalendarPicture(uid);
+            return Result.success(calendarPicture);
+
+        } catch (Exception e) {
+            return Result.fail(MessageConstant.GET_CALENDAR_PICTURE_FAILED);
+        }
     }
 }
