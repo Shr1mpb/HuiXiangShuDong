@@ -16,10 +16,14 @@ import edu.twt.rehuixiangshudong.zoo.util.AliOssUtil;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalGroupVO;
 import edu.twt.rehuixiangshudong.zoo.vo.JournalVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,6 +31,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class JournalServiceImpl implements JournalService {
+    private final String gaoDeKey = "";
     @Autowired
     private JournalMapper journalMapper;
     @Autowired
@@ -35,6 +40,8 @@ public class JournalServiceImpl implements JournalService {
     private UserMapper userMapper;
     @Autowired
     private AliOssUtil aliOssUtil;
+    @Autowired
+    private CloseableHttpClient httpClient;
 
     /**
      * 创建日记功能
@@ -47,7 +54,26 @@ public class JournalServiceImpl implements JournalService {
     public void createJournal(JournalDTO journalDTO) {
 
         try {
-                journalDTO.setJournalGroupIdAt(0);
+            journalDTO.setJournalGroupIdAt(0);
+
+            //创建连接对象(Bean中已创建 (启动类里))
+            HttpGet httpGet = new HttpGet("https://restapi.amap.com/v3/geocode/regeo?location="+journalDTO.getLocation()
+                    +"&key="+gaoDeKey);
+            //调用execute发送请求
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            //获取返回的状态码
+            int statusCode = response.getStatusLine().getStatusCode();
+            log.info("查询地址服务器返回的状态码是：" + statusCode);
+            //获取返回的数据 使用工具类解析
+            HttpEntity entity = response.getEntity();
+            String body = EntityUtils.toString(entity);
+            log.info("服务器返回的数据是：" + body);
+            int startIndex = body.lastIndexOf("formatted_address")+20;
+            int endIndex = body.indexOf("\"", startIndex);
+            String realLocation = body.substring(startIndex, endIndex);
+            journalDTO.setLocation(realLocation);
+
+
             journalMapper.createJournal(journalDTO);
             //创建日记 用户日记+1
             userMapper.updateJournalCount(1,journalDTO.getUserIdAt());
@@ -70,6 +96,24 @@ public class JournalServiceImpl implements JournalService {
         }
 
         try {//在日记串中创建日记
+
+            //创建连接对象(Bean中已创建 (启动类里))
+            HttpGet httpGet = new HttpGet("https://restapi.amap.com/v3/geocode/regeo?location="+journalDTO.getLocation()
+                    +"&key="+gaoDeKey);
+            //调用execute发送请求
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            //获取返回的状态码
+            int statusCode = response.getStatusLine().getStatusCode();
+            log.info("查询地址服务器返回的状态码是：" + statusCode);
+            //获取返回的数据 使用工具类解析
+            HttpEntity entity = response.getEntity();
+            String body = EntityUtils.toString(entity);
+            log.info("服务器返回的数据是：" + body);
+            int startIndex = body.lastIndexOf("formatted_address")+20;
+            int endIndex = body.indexOf("\"", startIndex);
+            String realLocation = body.substring(startIndex, endIndex);
+            journalDTO.setLocation(realLocation);
+
             journalMapper.createJournal(journalDTO);
             //创建日记 用户日记数量 +1
             userMapper.updateJournalCount(1,journalDTO.getUserIdAt());

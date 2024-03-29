@@ -1,6 +1,7 @@
 package edu.twt.rehuixiangshudong;
 
 import org.apache.catalina.connector.Connector;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -8,6 +9,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import static org.apache.http.impl.client.HttpClients.createDefault;
 
 @SpringBootApplication
 @ServletComponentScan//扫描servlet组件 此处指的过滤器
@@ -46,6 +49,15 @@ public class ReHuiXiangShuDongApplication {
         //重定向证书端口443，便于http自动跳转https
         connector.setRedirectPort(443);
         return connector;
+    }
+
+    /**
+     * 创建HttpClient对象
+     * @return
+     */
+    @Bean
+    public CloseableHttpClient httpClient(){
+        return createDefault();
     }
 }
 
