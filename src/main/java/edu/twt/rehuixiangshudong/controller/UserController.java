@@ -82,7 +82,7 @@ public class UserController {
 
         //生成的token存入redis中
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.set(token, token, jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
+        operations.set(user.getUid().toString(), token, jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
         //包装返回结果
         UserRegisterAndLoginVO userRegisterAndLoginVO = UserRegisterAndLoginVO.builder()
                 .uid(user.getUid())
@@ -118,7 +118,7 @@ public class UserController {
         );
         //生成的token存入redis中
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.set(token, token, jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
+        operations.set(user.getUid().toString() , token, jwtProperties.getTtl(), TimeUnit.MILLISECONDS);
         UserRegisterAndLoginVO userRegisterAndLoginVO = UserRegisterAndLoginVO.builder()
                 .uid(user.getUid())
                 .username(user.getUsername())
@@ -159,7 +159,7 @@ public class UserController {
 
         //修改密码成功后 删除redis中存储的令牌
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.getOperations().delete(token);
+        operations.getOperations().delete(uid.toString());
         return Result.success(MessageConstant.CHANGE_PASSWORD_SUCCESS);
     }
 
@@ -177,7 +177,7 @@ public class UserController {
 
         //登出成功后 删除redis中存储的令牌
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.getOperations().delete(token);
+        operations.getOperations().delete(uid.toString());
 
         return new Result(MessageConstant.LOGOUT_SUCCEED);
     }

@@ -5,7 +5,6 @@ import edu.twt.rehuixiangshudong.zoo.constant.JwtClaimsConstant;
 import edu.twt.rehuixiangshudong.zoo.properties.JwtProperties;
 import edu.twt.rehuixiangshudong.zoo.constant.MessageConstant;
 import edu.twt.rehuixiangshudong.zoo.result.Result;
-import edu.twt.rehuixiangshudong.zoo.util.JwtUtil;
 import edu.twt.rehuixiangshudong.zoo.util.ThreadLocalUtil;
 import io.jsonwebtoken.*;
 import jakarta.servlet.*;
@@ -20,7 +19,6 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson2.JSONObject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
 import java.util.Map;
 
 @WebFilter(urlPatterns = "/*")
@@ -79,7 +77,7 @@ public class TokenFilter implements jakarta.servlet.Filter {
         //使用ThreadLocal记住当前的uid
         ThreadLocalUtil.setCurrentUid(uid);
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        String redisJwt = operations.get(jwt);
+        String redisJwt = operations.get(String.valueOf(uid));
         //若redis中没有jwt 则令其失效
         if (redisJwt == null) {
             log.info("uid为 {} 用户的令牌过期失效！",uid);
