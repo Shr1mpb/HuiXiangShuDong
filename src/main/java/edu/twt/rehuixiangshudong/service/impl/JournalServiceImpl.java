@@ -71,8 +71,11 @@ public class JournalServiceImpl implements JournalService {
             int startIndex = body.lastIndexOf("formatted_address")+20;
             int endIndex = body.indexOf("\"", startIndex);
             String realLocation = body.substring(startIndex, endIndex);
-            journalDTO.setLocation(realLocation);
-
+            if( realLocation.equals("],")) {
+                journalDTO.setLocation(null);
+            }else {
+                journalDTO.setLocation(realLocation);
+            }
 
             journalMapper.createJournal(journalDTO);
             //创建日记 用户日记+1
@@ -112,7 +115,11 @@ public class JournalServiceImpl implements JournalService {
             int startIndex = body.lastIndexOf("formatted_address")+20;
             int endIndex = body.indexOf("\"", startIndex);
             String realLocation = body.substring(startIndex, endIndex);
-            journalDTO.setLocation(realLocation);
+            if( realLocation.equals("],")) {
+                journalDTO.setLocation(null);
+            }else {
+                journalDTO.setLocation(realLocation);
+            }
 
             journalMapper.createJournal(journalDTO);
             //创建日记 用户日记数量 +1
