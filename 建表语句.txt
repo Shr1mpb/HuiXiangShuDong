@@ -15,7 +15,7 @@ create table users
     journal_group_count int UNSIGNED default 0        not NULL comment '用户拥有的日记串数量',
     text_count          int UNSIGNED default 0        not NULL comment '用户日记的总字数',
     write_days          int UNSIGNED default 0        not NULL comment '用户记录的天数',
-    location            varchar(20)  default NULL     NULL comment '用户的地址',
+    location            varchar(55)  default NULL     NULL comment '用户的地址',
     background_image    varchar(255) default NULL     NULL comment '用户界面的背景图片URL',
     search_history      TEXT         default NULL     NULL comment '用户搜索的历史记录备份',
     register_time       DATETIME     default CURRENT_TIMESTAMP     not NULL comment '用户注册的时间',
