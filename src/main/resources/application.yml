@@ -12,7 +12,7 @@ server:
     #key-password: 私钥密码
 #配置静态资源的前缀
 static:
-  url: http://8.130.98.175/images/
+  url: https://mambaout.xyz/images/
 
 spring:
   profiles:

@@ -34,7 +34,15 @@ public class TokenFilter implements jakarta.servlet.Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse)servletResponse;
-        //1.获取请求url
+        //0.由于tomcat无法实现强制重定向，在这里使用filter进行强制重定向
+        if (!"https".equalsIgnoreCase(httpServletRequest.getScheme())) {
+            String redirectURL = "https://" + httpServletRequest.getServerName() + httpServletRequest.getRequestURI();
+            httpServletResponse.sendRedirect(redirectURL);
+            return;
+        }
+
+
+    //1.获取请求url
         String url = httpServletRequest.getRequestURL().toString();
         String uri = httpServletRequest.getRequestURI();//请求后缀 协议://域名"/xxx/xxx"
         log.info("收到请求 URL" + url + "来自" + httpServletRequest.getRemoteAddr());
